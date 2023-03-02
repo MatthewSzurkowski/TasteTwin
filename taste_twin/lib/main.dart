@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'pages/homepage.dart';
+import 'pages/carousel_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
+      // Switch MyHomePage -> CarouselPage to test
       home: const MyHomePage(title: 'Taste Twin'),
     );
   }

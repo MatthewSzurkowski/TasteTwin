@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:cupertino_icons/cupertino_icons.dart';
-
+// import 'package:cupertino_icons/cupertino_icons.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -22,18 +21,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  // void _incrementCounter() {
+  //   // setState(() {
+  //   //   // This call to setState tells the Flutter framework that something has
+  //   //   // changed in this State, which causes it to rerun the build method below
+  //   //   // so that the display can reflect the updated values. If we changed
+  //   //   // _counter without calling setState(), then the build method would not be
+  //   //   // called again, and so nothing would appear to happen.
+  //   // });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -81,11 +77,13 @@ class _MyHomePageState extends State<MyHomePage> {
                             MaterialStateProperty.all<Color>(Colors.blue),
                         overlayColor: MaterialStateProperty.resolveWith<Color?>(
                           (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.hovered))
+                            if (states.contains(MaterialState.hovered)) {
                               return Colors.blue.withOpacity(0.04);
+                            }
                             if (states.contains(MaterialState.focused) ||
-                                states.contains(MaterialState.pressed))
+                                states.contains(MaterialState.pressed)) {
                               return Colors.blue.withOpacity(0.12);
+                            }
                             return null; // Defer to the widget's default.
                           },
                         ),
@@ -109,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       foregroundColor:
                           MaterialStateProperty.all<Color>(Colors.blue)),
                   onPressed: () {},
-                  child: Text('Search Filters'),
+                  child: const Text('Search Filters'),
                 ),
               ]),
             ],

@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
-
+import 'package:taste_twin/models/restaurant.dart';
+import 'package:taste_twin/pages/results_page.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -90,7 +91,12 @@ class _MyHomePageState extends State<MyHomePage> {
                           },
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        // TODO: this is temporary, should navigate to match page once implemented
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) =>
+                                ResultsPage(matches: tempRestaurantList)));
+                      },
                       child: Center(
                           child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

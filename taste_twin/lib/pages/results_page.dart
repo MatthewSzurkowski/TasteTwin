@@ -18,6 +18,7 @@ class ResultsPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            // Title
             Container(
               margin: const EdgeInsets.all(20),
               child: const Text(
@@ -29,6 +30,8 @@ class ResultsPage extends StatelessWidget {
                 ),
               ),
             ),
+
+            // Scrollable list of Results
             Expanded(
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -38,12 +41,38 @@ class ResultsPage extends StatelessWidget {
                 child: ListView.builder(
                   padding: const EdgeInsets.all(10.0),
                   itemBuilder: ((context, index) {
-                    return Text(matches[index].name);
+                    return ExpansionTile(
+                      leading: Text(
+                        "#${index + 1}",
+                        style: const TextStyle(
+                          color: Colors.blue,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      title: Text(matches[index].name),
+                      subtitle: Text(
+                        "${matches[index].type} - ${matches[index].price}",
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                      children: [
+                        Text(matches[index].description),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          "Only ${matches[index].location} km from you.",
+                          style: const TextStyle(fontSize: 12),
+                        )
+                      ],
+                    );
                   }),
                   itemCount: matches.length,
                 ),
               ),
             ),
+
+            // Back to Search button
             Container(
               margin: const EdgeInsets.all(20),
               child: SizedBox(
@@ -66,7 +95,9 @@ class ResultsPage extends StatelessWidget {
                       },
                     ),
                   ),
-                  onPressed: (() {}),
+                  onPressed: (() {
+                    Navigator.of(context).pop();
+                  }),
                   child: const Center(
                     child: Text("Back to Search"),
                   ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 // import 'pages/homepage.dart';
 // import 'pages/carousel_page.dart';
 import 'pages/matchpage.dart';
+import 'pages/settings.dart';
+import 'pages/about.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,7 +30,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       // Switch MyHomePage -> MatchPage to test
-      home: const MatchPage(title: 'Taste Twin'),
+      home: const AboutPage(title: 'Taste Twin'),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../components/MainDrawer.dart';
 // import 'package:cupertino_icons/cupertino_icons.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -113,53 +114,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-        drawer: Drawer(
-          // Add a ListView to the drawer. This ensures the user can scroll
-          // through the options in the drawer if there isn't enough vertical
-          // space to fit everything.
-          child: ListView(
-            // Important: Remove any padding from the ListView.
-            padding: EdgeInsets.zero,
-            children: [
-              const DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                ),
-                child: Text('Taste Twin',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 38)),
-              ),
-              ListTile(
-                title: const Text('Settings'),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: const Text('Filters'),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: const Text('About'),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ), // This trailing comma makes auto-formatting nicer for build methods.
-        ));
+        drawer: const MainDrawer());
   }
 }

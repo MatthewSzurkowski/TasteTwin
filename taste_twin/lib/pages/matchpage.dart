@@ -3,12 +3,27 @@ import 'package:flutter/material.dart';
 import 'package:swipe_cards/draggable_card.dart';
 // import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:swipe_cards/swipe_cards.dart';
+import 'package:taste_twin/models/restaurant.dart';
 
 class Content {
   final String text;
   final Color color;
+  final String name;
+  final int location;
+  final String price;
+  final String type;
+  final String description;
+  final String pictureUrl;
 
-  Content({required this.text, required this.color});
+  Content(
+      {required this.text,
+      required this.color,
+      required this.name,
+      required this.location,
+      required this.price,
+      required this.type,
+      required this.description,
+      required this.pictureUrl});
 }
 
 class MatchPage extends StatefulWidget {
@@ -44,24 +59,32 @@ class _MatchPage extends State<MatchPage> {
 
   @override
   void initState() {
-    for (int i = 0; i < _names.length; i++) {
+    for (int i = 0; i < tempRestaurantList.length; i++) {
       _swipeItems.add(SwipeItem(
-          content: Content(text: _names[i], color: _colors[i]),
+          content: Content(
+              text: tempRestaurantList[i].name,
+              name: tempRestaurantList[i].name,
+              location: tempRestaurantList[i].location,
+              price: tempRestaurantList[i].price,
+              type: tempRestaurantList[i].type,
+              description: tempRestaurantList[i].description,
+              pictureUrl: tempRestaurantList[i].pictureURL,
+              color: _colors[i % _colors.length]),
           likeAction: () {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("Liked ${_names[i]}"),
+              content: Text("Liked ${tempRestaurantList[i].name}"),
               duration: const Duration(milliseconds: 500),
             ));
           },
           nopeAction: () {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("Nope ${_names[i]}"),
+              content: Text("Nope ${tempRestaurantList[i].name}"),
               duration: const Duration(milliseconds: 500),
             ));
           },
           superlikeAction: () {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("Superliked ${_names[i]}"),
+              content: Text("Superliked ${tempRestaurantList[i].name}"),
               duration: const Duration(milliseconds: 500),
             ));
           },
@@ -98,10 +121,23 @@ class _MatchPage extends State<MatchPage> {
                 return Container(
                   alignment: Alignment.center,
                   color: _swipeItems[index].content.color,
-                  child: Text(
-                    _swipeItems[index].content.text,
-                    style: const TextStyle(fontSize: 100),
-                  ),
+                  child: ListView(children: [
+                    // Image(image: )
+                    Text(
+                      _swipeItems[index].content.text,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      "General Kenobi",
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ]),
                 );
               },
               onStackFinished: () {

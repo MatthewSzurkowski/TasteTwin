@@ -121,23 +121,18 @@ class _MatchPage extends State<MatchPage> {
                 return Container(
                   alignment: Alignment.center,
                   color: _swipeItems[index].content.color,
-                  child: ListView(children: [
-                    // Image(image: )
-                    Text(
-                      _swipeItems[index].content.text,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      "General Kenobi",
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ]),
+                  child: Stack(
+                    children: [
+                      Image.network(_swipeItems[index].content.pictureUrl),
+                      Column(
+                        children: [
+                          Text(_swipeItems[index].content.name),
+                          Text(_swipeItems[index].content.location.toString()),
+                          Text(_swipeItems[index].content.price),
+                        ],
+                      )
+                    ],
+                  ),
                 );
               },
               onStackFinished: () {

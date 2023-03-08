@@ -22,6 +22,8 @@ class FiltersPage extends StatefulWidget {
 }
 
 class _FiltersPage extends State<FiltersPage> {
+  double _currentDistance = 20.0; // initial value for the slider
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -36,9 +38,41 @@ class _FiltersPage extends State<FiltersPage> {
           // the App.build method, and use it to set our appbar title.
           title: Text(widget.title),
         ),
-        body: const Center(
-            // Center is a layout widget. It takes a single child and positions it
-            // in the middle of the parent.
-            child: Text("Filters Page")));
+        body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Search Distance'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('0 km'),
+                Text('100 km'),
+              ],
+            ),
+            Slider(
+              value: _currentDistance,
+              min: 0.0,
+              max: 100.0,
+              divisions: 10,
+              label: '$_currentDistance km',
+              onChanged: (double value) {
+                setState(() {
+                  _currentDistance = value;
+                });
+              },
+            ),
+            Text('Current distance: $_currentDistance km'),
+            // Add more filters here
+          ],
+        ),
+      ),
+    );
+
+        // body: const Center(
+        //     // Center is a layout widget. It takes a single child and positions it
+        //     // in the middle of the parent.
+        //     child: Text("Filters Page")));
   }
 }

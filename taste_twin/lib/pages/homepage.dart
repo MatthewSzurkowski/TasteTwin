@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../components/MainDrawer.dart';
+import 'filterspage.dart';
 // import 'package:cupertino_icons/cupertino_icons.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -105,9 +106,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 TextButton(
                   style: ButtonStyle(
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.blue)),
-                  onPressed: () {},
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.blue),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => const FiltersPage(
+                          title: 'Filters',
+                        ),
+                      ),
+                    );
+                  },
                   child: const Text('Search Filters'),
                 ),
               ]),

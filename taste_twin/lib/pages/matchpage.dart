@@ -4,6 +4,7 @@ import 'package:swipe_cards/draggable_card.dart';
 // import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import 'results_page.dart';
+import 'package:taste_twin/models/restaurant.dart';
 
 class Content {
   final String text;
@@ -32,6 +33,7 @@ class MatchPage extends StatefulWidget {
 
 class _MatchPage extends State<MatchPage> {
   List<SwipeItem> _swipeItems = <SwipeItem>[];
+  List<Restaurant> _matches = <Restaurant>[];
   late MatchEngine _matchEngine;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   List<String> _names = ["Red", "Blue", "Green", "Yellow", "Orange"];
@@ -45,24 +47,26 @@ class _MatchPage extends State<MatchPage> {
 
   @override
   void initState() {
-    for (int i = 0; i < _names.length; i++) {
+    for (int i = 0; i < tempRestaurantList.length; i++) {
       _swipeItems.add(SwipeItem(
-          content: Content(text: _names[i], color: _colors[i]),
+          content:
+              Content(text: tempRestaurantList[i].name, color: Colors.white),
           likeAction: () {
+            _handleLikedRestaurant(i);
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("Liked ${_names[i]}"),
+              content: Text("Liked ${tempRestaurantList[i].name}"),
               duration: const Duration(milliseconds: 500),
             ));
           },
           nopeAction: () {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("Nope ${_names[i]}"),
+              content: Text("Nope ${tempRestaurantList[i].name}"),
               duration: const Duration(milliseconds: 500),
             ));
           },
           superlikeAction: () {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("Superliked ${_names[i]}"),
+              content: Text("Superliked ${tempRestaurantList[i].name}"),
               duration: const Duration(milliseconds: 500),
             ));
           },
@@ -81,6 +85,10 @@ class _MatchPage extends State<MatchPage> {
     setState(() {
       _showSwipeCards = false;
     });
+  }
+
+  void _handleLikedRestaurant(int index) {
+    _matches.add(tempRestaurantList[index]);
   }
 
   @override
@@ -176,10 +184,9 @@ class _MatchPage extends State<MatchPage> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    const ResultsPage(
+                                builder: (BuildContext context) => ResultsPage(
                                   title: 'Results',
-                                  matches: [],
+                                  matches: _matches,
                                 ),
                               ),
                             );

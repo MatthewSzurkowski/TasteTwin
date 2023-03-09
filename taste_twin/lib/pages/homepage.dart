@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:cupertino_icons/cupertino_icons.dart';
+import 'package:taste_twin/models/restaurant.dart';
+import 'package:taste_twin/pages/results_page.dart';
 import '../components/MainDrawer.dart';
 import 'filterspage.dart';
 import 'matchpage.dart';
-// import 'package:cupertino_icons/cupertino_icons.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});

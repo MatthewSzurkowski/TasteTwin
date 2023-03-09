@@ -1,6 +1,5 @@
 // import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 
 class AboutPage extends StatefulWidget {
   const AboutPage({super.key, required this.title});
@@ -12,9 +11,7 @@ class AboutPage extends StatefulWidget {
 }
 
 class _AboutPage extends State<AboutPage> {
-  final List<bool> _selectedBrightness = <bool>[true, false];
   bool vertical = false;
-  bool location_services = true;
 
   @override
   Widget build(BuildContext context) {

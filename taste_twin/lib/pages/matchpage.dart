@@ -1,9 +1,9 @@
-// import 'package:flutter/cupertino.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:swipe_cards/draggable_card.dart';
 // import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:swipe_cards/swipe_cards.dart';
+import 'results_page.dart';
 import 'package:taste_twin/models/restaurant.dart';
 
 class Content {
@@ -47,6 +47,7 @@ class MatchPage extends StatefulWidget {
 
 class _MatchPage extends State<MatchPage> {
   List<SwipeItem> _swipeItems = <SwipeItem>[];
+  List<Restaurant> _matches = <Restaurant>[];
   late MatchEngine _matchEngine;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   List<String> _names = ["Red", "Blue", "Green", "Yellow", "Orange"];
@@ -72,6 +73,7 @@ class _MatchPage extends State<MatchPage> {
               pictureUrl: tempRestaurantList[i].pictureURL,
               color: _colors[i % _colors.length]),
           likeAction: () {
+            _handleLikedRestaurant(i);
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text("Liked ${tempRestaurantList[i].name}"),
               duration: const Duration(milliseconds: 500),
@@ -98,6 +100,18 @@ class _MatchPage extends State<MatchPage> {
     super.initState();
   }
 
+  bool _showSwipeCards = true;
+
+  void _handleStackFinished() {
+    setState(() {
+      _showSwipeCards = false;
+    });
+  }
+
+  void _handleLikedRestaurant(int index) {
+    _matches.add(tempRestaurantList[index]);
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -112,9 +126,9 @@ class _MatchPage extends State<MatchPage> {
           // the App.build method, and use it to set our appbar title.
           title: Text(widget.title),
         ),
-        body: Container(
-            child: Column(children: [
-          Container(
+        body: _showSwipeCards
+            ? Column(children: [
+          SizedBox(
             height: MediaQuery.of(context).size.height * 0.75,
             width: 400,
             child: SwipeCards(
@@ -203,18 +217,6 @@ class _MatchPage extends State<MatchPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              // ElevatedButton(
-              //   onPressed: () {
-              //     _matchEngine.currentItem?.nope();
-              //   },
-              //   style: ButtonStyle(
-              //       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              //           RoundedRectangleBorder(
-              //               borderRadius: BorderRadius.circular(18.0),
-              //               side: BorderSide(color: Colors.red)))),
-              //   child:
-              //       Icon(CupertinoIcons.heart, size: 40, color: Colors.white),
-              // ),
               RawMaterialButton(
                 onPressed: () {
                   _matchEngine.currentItem?.nope();
@@ -237,19 +239,58 @@ class _MatchPage extends State<MatchPage> {
                 padding: EdgeInsets.all(15.0),
                 shape: CircleBorder(),
               ),
-              //   ElevatedButton(
-              //       onPressed: () {
-              //         _matchEngine.currentItem?.like();
-              //       },
-              //       child: Icon(CupertinoIcons.clear_circled,
-              //           size: 40, color: Colors.white),
-              //       style: ButtonStyle(
-              //           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              //               RoundedRectangleBorder(
-              //                   borderRadius: BorderRadius.circular(100.0),
-              //                   side: BorderSide(color: Colors.green))))),
             ],
           )
-        ])));
+        ])
+        : Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Column(children: [
+                    SizedBox(
+                      height: 32,
+                      width: 150,
+                      child: TextButton(
+                          style: ButtonStyle(
+                            foregroundColor:
+                                MaterialStateProperty.all<Color>(Colors.white),
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(Colors.blue),
+                            overlayColor:
+                                MaterialStateProperty.resolveWith<Color?>(
+                              (Set<MaterialState> states) {
+                                if (states.contains(MaterialState.hovered)) {
+                                  return Colors.blue.withOpacity(0.04);
+                                }
+                                if (states.contains(MaterialState.focused) ||
+                                    states.contains(MaterialState.pressed)) {
+                                  return Colors.blue.withOpacity(0.12);
+                                }
+                                return null; // Defer to the widget's default.
+                              },
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) => ResultsPage(
+                                  title: 'Results',
+                                  matches: _matches,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Center(
+                              child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [Text('View Results ')],
+                          ))),
+                    ),
+                  ]),
+                ],
+              ),
+            ),
+    );));
   }
 }

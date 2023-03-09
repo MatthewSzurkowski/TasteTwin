@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:taste_twin/pages/homepage.dart';
-// import 'pages/homepage.dart';
-// import 'pages/carousel_page.dart';
-import 'pages/matchpage.dart';
-import 'pages/settings.dart';
-import 'pages/about.dart';
 
 void main() {
   runApp(const MyApp());

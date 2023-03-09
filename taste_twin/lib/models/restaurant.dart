@@ -70,7 +70,7 @@ final List<Restaurant> tempRestaurantList = [
       "Milkshake": " - \$44",
     },
     "We serve perfectly cooked steak alongside our world renowned milkshakes.",
-    "https://www.mashed.com/img/gallery/the-worst-steak-n-shake-menu-item-according-to-nearly-25-of-people/intro-1651671981.jpg",
+    "https://4sonrus.com/wp-content/uploads/2018/11/Set-5-Vertical-Milkshake-Candy--683x1024.jpg",
     "\$\$\$",
   ),
   Restaurant(

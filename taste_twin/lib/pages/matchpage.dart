@@ -115,7 +115,7 @@ class _MatchPage extends State<MatchPage> {
         body: Container(
             child: Column(children: [
           Container(
-            height: 550,
+            height: MediaQuery.of(context).size.height * 0.75,
             width: 400,
             child: SwipeCards(
               matchEngine: _matchEngine,
@@ -148,17 +148,17 @@ class _MatchPage extends State<MatchPage> {
                                       color:
                                           Color.fromARGB(255, 255, 255, 255)),
                                 ),
+                                Text(_swipeItems[index].content.price,
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Color.fromARGB(
+                                            255, 255, 255, 255))),
                                 Text(
                                     _swipeItems[index]
                                             .content
                                             .location
                                             .toString() +
                                         " kms away",
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        color: Color.fromARGB(
-                                            255, 255, 255, 255))),
-                                Text(_swipeItems[index].content.price,
                                     style: TextStyle(
                                         fontSize: 20,
                                         color: Color.fromARGB(
@@ -203,21 +203,51 @@ class _MatchPage extends State<MatchPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              ElevatedButton(
-                  onPressed: () {
-                    _matchEngine.currentItem?.nope();
-                  },
-                  child: const Text("Nope")),
-              ElevatedButton(
-                  onPressed: () {
-                    _matchEngine.currentItem?.superLike();
-                  },
-                  child: const Text("Superlike")),
-              ElevatedButton(
-                  onPressed: () {
-                    _matchEngine.currentItem?.like();
-                  },
-                  child: const Text("Like"))
+              // ElevatedButton(
+              //   onPressed: () {
+              //     _matchEngine.currentItem?.nope();
+              //   },
+              //   style: ButtonStyle(
+              //       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              //           RoundedRectangleBorder(
+              //               borderRadius: BorderRadius.circular(18.0),
+              //               side: BorderSide(color: Colors.red)))),
+              //   child:
+              //       Icon(CupertinoIcons.heart, size: 40, color: Colors.white),
+              // ),
+              RawMaterialButton(
+                onPressed: () {
+                  _matchEngine.currentItem?.nope();
+                },
+                elevation: 2.0,
+                fillColor: Colors.white,
+                child: Icon(CupertinoIcons.clear_circled,
+                    size: 40, color: Color.fromARGB(255, 132, 18, 18)),
+                padding: EdgeInsets.all(15.0),
+                shape: CircleBorder(),
+              ),
+              RawMaterialButton(
+                onPressed: () {
+                  _matchEngine.currentItem?.like();
+                },
+                elevation: 2.0,
+                fillColor: Colors.white,
+                child: Icon(CupertinoIcons.heart,
+                    size: 40, color: Color.fromARGB(255, 15, 128, 15)),
+                padding: EdgeInsets.all(15.0),
+                shape: CircleBorder(),
+              ),
+              //   ElevatedButton(
+              //       onPressed: () {
+              //         _matchEngine.currentItem?.like();
+              //       },
+              //       child: Icon(CupertinoIcons.clear_circled,
+              //           size: 40, color: Colors.white),
+              //       style: ButtonStyle(
+              //           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              //               RoundedRectangleBorder(
+              //                   borderRadius: BorderRadius.circular(100.0),
+              //                   side: BorderSide(color: Colors.green))))),
             ],
           )
         ])));

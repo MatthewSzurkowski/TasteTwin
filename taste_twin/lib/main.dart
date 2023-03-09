@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       // Switch MyHomePage -> MatchPage to test
-      home: const MatchPage(title: 'Taste Twin'),
+      home: const MyHomePage(title: 'Taste Twin'),
     );
   }
 }

@@ -82,7 +82,7 @@ final List<Restaurant> tempRestaurantList = [
       "Best Burger": "This is our best burger - \$22",
     },
     "Burger place serving craft beer & burgers.",
-    "https://unsplash.com/photos/poI7DelFiVA",
+    "https://media.discordapp.net/attachments/1064228781469999114/1080679126760951859/image.png?width=1078&height=1204",
     "\$\$\$",
   ),
   Restaurant(
@@ -95,7 +95,7 @@ final List<Restaurant> tempRestaurantList = [
       "Pretentious Pasta": "Wow, we are impressed you ordered it - \$36",
     },
     "Local restauarant specializing in mid-tier Italian cuisine.",
-    "https://unsplash.com/photos/N_Y88TWmGwA",
+    "https://media.discordapp.net/attachments/1064228781469999114/1083237084812279888/maxresdefault.png?width=2232&height=1256",
     "\$\$",
   ),
   Restaurant(

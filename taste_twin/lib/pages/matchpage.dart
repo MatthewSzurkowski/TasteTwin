@@ -1,4 +1,4 @@
-//import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:swipe_cards/draggable_card.dart';
 // import 'package:cupertino_icons/cupertino_icons.dart';
@@ -9,8 +9,22 @@ import 'package:taste_twin/models/restaurant.dart';
 class Content {
   final String text;
   final Color color;
+  final String name;
+  final int location;
+  final String price;
+  final String type;
+  final String description;
+  final String pictureUrl;
 
-  Content({required this.text, required this.color});
+  Content(
+      {required this.text,
+      required this.color,
+      required this.name,
+      required this.location,
+      required this.price,
+      required this.type,
+      required this.description,
+      required this.pictureUrl});
 }
 
 class MatchPage extends StatefulWidget {
@@ -49,8 +63,15 @@ class _MatchPage extends State<MatchPage> {
   void initState() {
     for (int i = 0; i < tempRestaurantList.length; i++) {
       _swipeItems.add(SwipeItem(
-          content:
-              Content(text: tempRestaurantList[i].name, color: Colors.white),
+          content: Content(
+              text: tempRestaurantList[i].name,
+              name: tempRestaurantList[i].name,
+              location: tempRestaurantList[i].location,
+              price: tempRestaurantList[i].price,
+              type: tempRestaurantList[i].type,
+              description: tempRestaurantList[i].description,
+              pictureUrl: tempRestaurantList[i].pictureURL,
+              color: _colors[i % _colors.length]),
           likeAction: () {
             _handleLikedRestaurant(i);
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -108,16 +129,85 @@ class _MatchPage extends State<MatchPage> {
       body: _showSwipeCards
           ? Column(children: [
               SizedBox(
-                height: 550,
+                height: MediaQuery.of(context).size.height * 0.75,
+                width: 400,
                 child: SwipeCards(
                   matchEngine: _matchEngine,
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
                       alignment: Alignment.center,
                       color: _swipeItems[index].content.color,
-                      child: Text(
-                        _swipeItems[index].content.text,
-                        style: const TextStyle(fontSize: 100),
+                      child: Stack(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                    _swipeItems[index].content.pictureUrl),
+                                fit: BoxFit.fitHeight,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment(0, 0),
+                                end: Alignment(0, 1),
+                                colors: [
+                                  Colors.transparent,
+                                  Colors.black,
+                                ],
+                              ),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      _swipeItems[index].content.name,
+                                      style: const TextStyle(
+                                          fontSize: 20,
+                                          color: Color.fromARGB(
+                                              255, 255, 255, 255)),
+                                    ),
+                                    Text(_swipeItems[index].content.price,
+                                        style: const TextStyle(
+                                            fontSize: 20,
+                                            color: Color.fromARGB(
+                                                255, 255, 255, 255))),
+                                    Text(
+                                        "${_swipeItems[index].content.location} kms away",
+                                        style: const TextStyle(
+                                            fontSize: 20,
+                                            color: Color.fromARGB(
+                                                255, 255, 255, 255))),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      IconButton(
+                                        onPressed: () {
+                                          print("Clicked");
+                                        },
+                                        icon: const Icon(CupertinoIcons.info,
+                                            size: 40, color: Colors.white),
+                                      )
+                                    ],
+                                  ))
+                            ],
+                          )
+                        ],
                       ),
                     );
                   },
@@ -134,21 +224,28 @@ class _MatchPage extends State<MatchPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton(
-                      onPressed: () {
-                        _matchEngine.currentItem?.nope();
-                      },
-                      child: const Text("Nope")),
-                  ElevatedButton(
-                      onPressed: () {
-                        _matchEngine.currentItem?.superLike();
-                      },
-                      child: const Text("Superlike")),
-                  ElevatedButton(
-                      onPressed: () {
-                        _matchEngine.currentItem?.like();
-                      },
-                      child: const Text("Like"))
+                  RawMaterialButton(
+                    onPressed: () {
+                      _matchEngine.currentItem?.nope();
+                    },
+                    elevation: 2.0,
+                    fillColor: Colors.white,
+                    padding: const EdgeInsets.all(15.0),
+                    shape: const CircleBorder(),
+                    child: const Icon(CupertinoIcons.clear_circled,
+                        size: 40, color: Color.fromARGB(255, 132, 18, 18)),
+                  ),
+                  RawMaterialButton(
+                    onPressed: () {
+                      _matchEngine.currentItem?.like();
+                    },
+                    elevation: 2.0,
+                    fillColor: Colors.white,
+                    padding: const EdgeInsets.all(15.0),
+                    shape: const CircleBorder(),
+                    child: const Icon(CupertinoIcons.heart,
+                        size: 40, color: Color.fromARGB(255, 15, 128, 15)),
+                  ),
                 ],
               )
             ])

@@ -1,8 +1,9 @@
-// import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:swipe_cards/draggable_card.dart';
 // import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:swipe_cards/swipe_cards.dart';
+import 'filterspage.dart';
 
 class Content {
   final String text;
@@ -105,10 +106,51 @@ class _MatchPage extends State<MatchPage> {
                 );
               },
               onStackFinished: () {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text("Stack Finished"),
-                  duration: Duration(milliseconds: 500),
-                ));
+                SizedBox(
+                  height: 32,
+                  width: 150,
+                  child: TextButton(
+                      style: ButtonStyle(
+                        foregroundColor:
+                            MaterialStateProperty.all<Color>(Colors.white),
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.blue),
+                        overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                          (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.hovered)) {
+                              return Colors.blue.withOpacity(0.04);
+                            }
+                            if (states.contains(MaterialState.focused) ||
+                                states.contains(MaterialState.pressed)) {
+                              return Colors.blue.withOpacity(0.12);
+                            }
+                            return null; // Defer to the widget's default.
+                          },
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => const MatchPage(
+                              title: '',
+                            ),
+                          ),
+                        );
+                      },
+                      child: Center(
+                          child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Text('Find Food '),
+                          Icon(
+                            CupertinoIcons.search,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                        ],
+                      ))),
+                );
               },
               itemChanged: (SwipeItem item, int index) {
                 print("item: ${item.content.text}, index: $index");

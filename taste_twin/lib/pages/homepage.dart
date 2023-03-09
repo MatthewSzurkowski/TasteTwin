@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../components/MainDrawer.dart';
 import 'filterspage.dart';
+import 'matchpage.dart';
 // import 'package:cupertino_icons/cupertino_icons.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -90,7 +91,16 @@ class _MyHomePageState extends State<MyHomePage> {
                           },
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => const MatchPage(
+                              title: '',
+                            ),
+                          ),
+                        );
+                      },
                       child: Center(
                           child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

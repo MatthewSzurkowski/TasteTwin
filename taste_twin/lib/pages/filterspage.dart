@@ -3,12 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 const List<String> list = <String>[
-  "30 seconds",
-  "1 minutes",
-  "2 minutes",
-  "3 minutes",
-  "4 minutes",
-  "5 minutes"
+  "30 Seconds",
+  "1 Minute",
+  "2 Minutes",
+  "3 Minutes",
+  "4 Minutes",
+  "5 Minutes"
 ];
 
 class FiltersPage extends StatefulWidget {
@@ -81,7 +81,7 @@ class _FiltersPage extends State<FiltersPage> {
             // Add more filters here
             const SizedBox(height: 20),
             const Center(
-                child: Text('Show fast Food',
+                child: Text('Show Fast Food',
                     style:
                         TextStyle(fontSize: 20, fontWeight: FontWeight.bold))),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [

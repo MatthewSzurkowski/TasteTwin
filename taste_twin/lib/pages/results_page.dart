@@ -2,11 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taste_twin/models/restaurant.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'homepage.dart';
 
 // Page to display the results of the matching process. Shows a list of
 // restauarants ranked based on the matches between those who used the app.
 class ResultsPage extends StatelessWidget {
-  const ResultsPage({super.key, required this.matches});
+  const ResultsPage({super.key, required this.matches, required String title});
 
   final List<Restaurant> matches;
 
@@ -123,17 +124,26 @@ class ResultsPage extends StatelessWidget {
                         MaterialStateProperty.all<Color>(Colors.blue),
                     overlayColor: MaterialStateProperty.resolveWith<Color?>(
                       (Set<MaterialState> states) {
-                        if (states.contains(MaterialState.hovered))
+                        if (states.contains(MaterialState.hovered)) {
                           return Colors.blue.withOpacity(0.04);
+                        }
                         if (states.contains(MaterialState.focused) ||
-                            states.contains(MaterialState.pressed))
+                            states.contains(MaterialState.pressed)) {
                           return Colors.blue.withOpacity(0.12);
+                        }
                         return null; // Defer to the widget's default.
                       },
                     ),
                   ),
                   onPressed: (() {
-                    Navigator.of(context).pop();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => const MyHomePage(
+                          title: 'Taste Twin',
+                        ),
+                      ),
+                    );
                   }),
                   child: const Center(
                     child: Text("Back to Search"),

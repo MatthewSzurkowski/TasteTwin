@@ -1,9 +1,9 @@
-import 'package:flutter/cupertino.dart';
+//import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:swipe_cards/draggable_card.dart';
 // import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:swipe_cards/swipe_cards.dart';
-import 'filterspage.dart';
+import 'results_page.dart';
 
 class Content {
   final String text;
@@ -75,6 +75,14 @@ class _MatchPage extends State<MatchPage> {
     super.initState();
   }
 
+  bool _showSwipeCards = true;
+
+  void _handleStackFinished() {
+    setState(() {
+      _showSwipeCards = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -84,101 +92,108 @@ class _MatchPage extends State<MatchPage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-        appBar: AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: Text(widget.title),
-        ),
-        body: Container(
-            child: Column(children: [
-          Container(
-            height: 550,
-            child: SwipeCards(
-              matchEngine: _matchEngine,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  alignment: Alignment.center,
-                  color: _swipeItems[index].content.color,
-                  child: Text(
-                    _swipeItems[index].content.text,
-                    style: const TextStyle(fontSize: 100),
-                  ),
-                );
-              },
-              onStackFinished: () {
-                SizedBox(
-                  height: 32,
-                  width: 150,
-                  child: TextButton(
-                      style: ButtonStyle(
-                        foregroundColor:
-                            MaterialStateProperty.all<Color>(Colors.white),
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.blue),
-                        overlayColor: MaterialStateProperty.resolveWith<Color?>(
-                          (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.hovered)) {
-                              return Colors.blue.withOpacity(0.04);
-                            }
-                            if (states.contains(MaterialState.focused) ||
-                                states.contains(MaterialState.pressed)) {
-                              return Colors.blue.withOpacity(0.12);
-                            }
-                            return null; // Defer to the widget's default.
-                          },
-                        ),
+      appBar: AppBar(
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+        title: Text(widget.title),
+      ),
+      body: _showSwipeCards
+          ? Column(children: [
+              SizedBox(
+                height: 550,
+                child: SwipeCards(
+                  matchEngine: _matchEngine,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                      alignment: Alignment.center,
+                      color: _swipeItems[index].content.color,
+                      child: Text(
+                        _swipeItems[index].content.text,
+                        style: const TextStyle(fontSize: 100),
                       ),
+                    );
+                  },
+                  onStackFinished: () {
+                    _handleStackFinished();
+                  },
+                  itemChanged: (SwipeItem item, int index) {
+                    print("item: ${item.content.text}, index: $index");
+                  },
+                  upSwipeAllowed: true,
+                  fillSpace: true,
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => const MatchPage(
-                              title: '',
+                        _matchEngine.currentItem?.nope();
+                      },
+                      child: const Text("Nope")),
+                  ElevatedButton(
+                      onPressed: () {
+                        _matchEngine.currentItem?.superLike();
+                      },
+                      child: const Text("Superlike")),
+                  ElevatedButton(
+                      onPressed: () {
+                        _matchEngine.currentItem?.like();
+                      },
+                      child: const Text("Like"))
+                ],
+              )
+            ])
+          : Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Column(children: [
+                    SizedBox(
+                      height: 32,
+                      width: 150,
+                      child: TextButton(
+                          style: ButtonStyle(
+                            foregroundColor:
+                                MaterialStateProperty.all<Color>(Colors.white),
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(Colors.blue),
+                            overlayColor:
+                                MaterialStateProperty.resolveWith<Color?>(
+                              (Set<MaterialState> states) {
+                                if (states.contains(MaterialState.hovered)) {
+                                  return Colors.blue.withOpacity(0.04);
+                                }
+                                if (states.contains(MaterialState.focused) ||
+                                    states.contains(MaterialState.pressed)) {
+                                  return Colors.blue.withOpacity(0.12);
+                                }
+                                return null; // Defer to the widget's default.
+                              },
                             ),
                           ),
-                        );
-                      },
-                      child: Center(
-                          child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Text('Find Food '),
-                          Icon(
-                            CupertinoIcons.search,
-                            color: Colors.white,
-                            size: 18,
-                          ),
-                        ],
-                      ))),
-                );
-              },
-              itemChanged: (SwipeItem item, int index) {
-                print("item: ${item.content.text}, index: $index");
-              },
-              upSwipeAllowed: true,
-              fillSpace: true,
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    const ResultsPage(
+                                  title: 'Results',
+                                  matches: [],
+                                ),
+                              ),
+                            );
+                          },
+                          child: Center(
+                              child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [Text('View Results ')],
+                          ))),
+                    ),
+                  ]),
+                ],
+              ),
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                  onPressed: () {
-                    _matchEngine.currentItem?.nope();
-                  },
-                  child: const Text("Nope")),
-              ElevatedButton(
-                  onPressed: () {
-                    _matchEngine.currentItem?.superLike();
-                  },
-                  child: const Text("Superlike")),
-              ElevatedButton(
-                  onPressed: () {
-                    _matchEngine.currentItem?.like();
-                  },
-                  child: const Text("Like"))
-            ],
-          )
-        ])));
+    );
   }
 }

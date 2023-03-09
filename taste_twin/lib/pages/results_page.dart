@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taste_twin/models/restaurant.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'homepage.dart';
 
 // Page to display the results of the matching process. Shows a list of
@@ -42,31 +44,66 @@ class ResultsPage extends StatelessWidget {
                 child: ListView.builder(
                   padding: const EdgeInsets.all(10.0),
                   itemBuilder: ((context, index) {
-                    return ExpansionTile(
-                      leading: Text(
-                        "#${index + 1}",
-                        style: const TextStyle(
-                          color: Colors.blue,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                    return Column(children: [
+                      ExpansionTile(
+                        leading: Text(
+                          "#${index + 1}",
+                          style: const TextStyle(
+                            color: Colors.blue,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      title: Text(matches[index].name),
-                      subtitle: Text(
-                        "${matches[index].type} - ${matches[index].price}",
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                      children: [
-                        Text(matches[index].description),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "Only ${matches[index].location} km from you.",
+                        trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              SizedBox(
+                                  width: 80,
+                                  child: ElevatedButton.icon(
+                                    onPressed: () {
+                                      // your button action goes here
+                                      String mapsUrl =
+                                          'https://www.google.com/maps/search/?api=1&query=the+manor+guelph';
+                                      launchUrlString(mapsUrl);
+                                    },
+                                    icon: const Icon(
+                                      CupertinoIcons.location,
+                                      color: Colors.white,
+                                      size: 18,
+                                    ),
+                                    label: const Text(
+                                      'Find',
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  )),
+                              const Icon(
+                                Icons.arrow_drop_down,
+                                size: 40,
+                              )
+                            ]),
+                        title: Text(matches[index].name),
+                        subtitle: Text(
+                          "${matches[index].type} - ${matches[index].price}",
                           style: const TextStyle(fontSize: 12),
-                        )
-                      ],
-                    );
+                        ),
+                        children: [
+                          Text(matches[index].description),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            "Only ${matches[index].location} km from you.",
+                            style: const TextStyle(fontSize: 12),
+                          )
+                        ],
+                      ),
+                      const Divider(
+                        color: Colors.blue,
+                        thickness: .5,
+                        indent: 0,
+                        endIndent: 0,
+                      ),
+                    ]);
                   }),
                   itemCount: matches.length,
                 ),

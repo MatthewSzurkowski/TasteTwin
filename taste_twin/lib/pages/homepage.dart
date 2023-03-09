@@ -6,6 +6,7 @@ import 'package:taste_twin/pages/results_page.dart';
 import '../components/MainDrawer.dart';
 import 'filterspage.dart';
 import 'matchpage.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -34,6 +35,20 @@ class _MyHomePageState extends State<MyHomePage> {
   //   //   // _counter without calling setState(), then the build method would not be
   //   //   // called again, and so nothing would appear to happen.
   //   // });
+  // }
+
+  // FirebaseFirestore firestore = FirebaseFirestore.instance;
+  // CollectionReference _collectionRef =
+  //     FirebaseFirestore.instance.collection('collection');
+
+  // Future<void> getData() async {
+  //   // Get docs from collection reference
+  //   QuerySnapshot querySnapshot = await _collectionRef.get();
+
+  //   // Get data from docs and convert map to List
+  //   final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+
+  //   print(allData);
   // }
 
   @override
@@ -116,6 +131,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     );
                   },
                   child: const Text('Search Filters'),
+                ),
+                TextButton(
+                  style: ButtonStyle(
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.blue),
+                  ),
+                  onPressed: () {},
+                  child: const Text('Test'),
                 ),
               ]),
             ],

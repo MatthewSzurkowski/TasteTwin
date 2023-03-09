@@ -1,4 +1,5 @@
 // import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:swipe_cards/draggable_card.dart';
 // import 'package:cupertino_icons/cupertino_icons.dart';
@@ -124,11 +125,55 @@ class _MatchPage extends State<MatchPage> {
                   child: Stack(
                     children: [
                       Image.network(_swipeItems[index].content.pictureUrl),
-                      Column(
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(_swipeItems[index].content.name),
-                          Text(_swipeItems[index].content.location.toString()),
-                          Text(_swipeItems[index].content.price),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _swipeItems[index].content.name,
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color:
+                                          Color.fromARGB(255, 255, 255, 255)),
+                                ),
+                                Text(
+                                    _swipeItems[index]
+                                            .content
+                                            .location
+                                            .toString() +
+                                        " kms away",
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Color.fromARGB(
+                                            255, 255, 255, 255))),
+                                Text(_swipeItems[index].content.price,
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Color.fromARGB(
+                                            255, 255, 255, 255))),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      print("Clicked");
+                                    },
+                                    icon: Icon(CupertinoIcons.info,
+                                        size: 40, color: Colors.white),
+                                  )
+                                ],
+                              ))
                         ],
                       )
                     ],

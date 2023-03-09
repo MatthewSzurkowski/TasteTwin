@@ -5,6 +5,7 @@ import 'package:taste_twin/pages/homepage.dart';
 import 'pages/matchpage.dart';
 import 'pages/settings.dart';
 import 'pages/about.dart';
+import 'pages/nextPerson.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       // Switch MyHomePage -> MatchPage to test
-      home: const MatchPage(title: 'Taste Twin'),
+      home: const NextPersonPage(title: 'Taste Twin'),
     );
   }
 }

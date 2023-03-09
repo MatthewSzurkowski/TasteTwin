@@ -98,9 +98,8 @@ class _MatchPage extends State<MatchPage> {
         title: Text(widget.title),
       ),
       body: _showSwipeCards
-          ? Container(
-              child: Column(children: [
-              Container(
+          ? Column(children: [
+              SizedBox(
                 height: 550,
                 child: SwipeCards(
                   matchEngine: _matchEngine,
@@ -144,7 +143,7 @@ class _MatchPage extends State<MatchPage> {
                       child: const Text("Like"))
                 ],
               )
-            ]))
+            ])
           : Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

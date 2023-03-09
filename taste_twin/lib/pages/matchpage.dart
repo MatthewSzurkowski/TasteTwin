@@ -116,6 +116,7 @@ class _MatchPage extends State<MatchPage> {
             child: Column(children: [
           Container(
             height: 550,
+            width: 400,
             child: SwipeCards(
               matchEngine: _matchEngine,
               itemBuilder: (BuildContext context, int index) {
@@ -124,7 +125,13 @@ class _MatchPage extends State<MatchPage> {
                   color: _swipeItems[index].content.color,
                   child: Stack(
                     children: [
-                      Image.network(_swipeItems[index].content.pictureUrl),
+                      FittedBox(
+                        child: FittedBox(
+                          fit: BoxFit.cover,
+                          child: Image.network(
+                              _swipeItems[index].content.pictureUrl),
+                        ),
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

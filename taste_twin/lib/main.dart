@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:taste_twin/pages/homepage.dart';
-// import 'pages/homepage.dart';
-// import 'pages/carousel_page.dart';
-import 'pages/matchpage.dart';
-import 'pages/settings.dart';
-import 'pages/about.dart';
-import 'pages/nextPerson.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,7 +26,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       // Switch MyHomePage -> MatchPage to test
-      home: const NextPersonPage(title: 'Taste Twin'),
+      home: const MyHomePage(title: 'Taste Twin'),
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:swipe_cards/draggable_card.dart';
 // import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:swipe_cards/swipe_cards.dart';
+import 'package:taste_twin/pages/nextPerson.dart';
 import 'results_page.dart';
 import 'package:taste_twin/models/restaurant.dart';
 
@@ -113,183 +114,151 @@ class _MatchPage extends State<MatchPage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: _showSwipeCards
-          ? Column(children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.75,
-                width: 400,
-                child: SwipeCards(
-                  matchEngine: _matchEngine,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      alignment: Alignment.center,
-                      color: Colors.white,
-                      child: Stack(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: NetworkImage(
-                                    _swipeItems[index].content.pictureUrl),
-                                fit: BoxFit.fitHeight,
+        appBar: AppBar(
+          // Here we take the value from the MyHomePage object that was created by
+          // the App.build method, and use it to set our appbar title.
+          title: Text(widget.title),
+        ),
+        body: _showSwipeCards
+            ? Column(children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.75,
+                  width: 400,
+                  child: SwipeCards(
+                    matchEngine: _matchEngine,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                        alignment: Alignment.center,
+                        color: _swipeItems[index].content.color,
+                        child: Stack(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: NetworkImage(
+                                      _swipeItems[index].content.pictureUrl),
+                                  fit: BoxFit.fitHeight,
+                                ),
                               ),
                             ),
-                          ),
-                          Container(
-                            decoration: const BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment(0, 0),
-                                end: Alignment(0, 1),
-                                colors: [
-                                  Colors.transparent,
-                                  Colors.black,
-                                ],
-                              ),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      _swipeItems[index].content.name,
-                                      style: const TextStyle(
-                                          fontSize: 20,
-                                          color: Color.fromARGB(
-                                              255, 255, 255, 255)),
-                                    ),
-                                    Text(_swipeItems[index].content.price,
-                                        style: const TextStyle(
-                                            fontSize: 20,
-                                            color: Color.fromARGB(
-                                                255, 255, 255, 255))),
-                                    Text(
-                                        "${_swipeItems[index].content.location} kms away",
-                                        style: const TextStyle(
-                                            fontSize: 20,
-                                            color: Color.fromARGB(
-                                                255, 255, 255, 255))),
+                            Container(
+                              decoration: const BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment(0, 0),
+                                  end: Alignment(0, 1),
+                                  colors: [
+                                    Colors.transparent,
+                                    Colors.black,
                                   ],
                                 ),
                               ),
-                              Padding(
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.end,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      IconButton(
-                                        onPressed: () {
-                                          print("Clicked");
-                                        },
-                                        icon: const Icon(CupertinoIcons.info,
-                                            size: 40, color: Colors.white),
-                                      )
+                                      Text(
+                                        _swipeItems[index].content.name,
+                                        style: const TextStyle(
+                                            fontSize: 20,
+                                            color: Color.fromARGB(
+                                                255, 255, 255, 255)),
+                                      ),
+                                      Text(_swipeItems[index].content.price,
+                                          style: const TextStyle(
+                                              fontSize: 20,
+                                              color: Color.fromARGB(
+                                                  255, 255, 255, 255))),
+                                      Text(
+                                          "${_swipeItems[index].content.location} kms away",
+                                          style: const TextStyle(
+                                              fontSize: 20,
+                                              color: Color.fromARGB(
+                                                  255, 255, 255, 255))),
                                     ],
-                                  ))
-                            ],
-                          )
-                        ],
+                                  ),
+                                ),
+                                Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        IconButton(
+                                          onPressed: () {
+                                            print("Clicked");
+                                          },
+                                          icon: const Icon(CupertinoIcons.info,
+                                              size: 40, color: Colors.white),
+                                        )
+                                      ],
+                                    ))
+                              ],
+                            )
+                          ],
+                        ),
+                      );
+                    },
+                    onStackFinished: () {
+                      _handleStackFinished();
+                    },
+                    itemChanged: (SwipeItem item, int index) {
+                      print("item: ${item.content.text}, index: $index");
+                    },
+                    upSwipeAllowed: true,
+                    fillSpace: true,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    RawMaterialButton(
+                      onPressed: () {
+                        _matchEngine.currentItem?.nope();
+                      },
+                      elevation: 2.0,
+                      fillColor: Colors.white,
+                      padding: const EdgeInsets.all(15.0),
+                      shape: const CircleBorder(),
+                      child: const Icon(CupertinoIcons.clear_circled,
+                          size: 40, color: Color.fromARGB(255, 132, 18, 18)),
+                    ),
+                    RawMaterialButton(
+                      onPressed: () {
+                        _matchEngine.currentItem?.like();
+                      },
+                      elevation: 2.0,
+                      fillColor: Colors.white,
+                      padding: const EdgeInsets.all(15.0),
+                      shape: const CircleBorder(),
+                      child: const Icon(CupertinoIcons.heart,
+                          size: 40, color: Color.fromARGB(255, 15, 128, 15)),
+                    ),
+                  ],
+                )
+              ])
+            : Center(child: Builder(
+                builder: (context) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => NextPersonPage(
+                          title: 'Taste Twin',
+                          matches: _matches,
+                        ),
                       ),
                     );
-                  },
-                  onStackFinished: () {
-                    _handleStackFinished();
-                  },
-                  itemChanged: (SwipeItem item, int index) {
-                    print("item: ${item.content.text}, index: $index");
-                  },
-                  upSwipeAllowed: true,
-                  fillSpace: true,
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  RawMaterialButton(
-                    onPressed: () {
-                      _matchEngine.currentItem?.nope();
-                    },
-                    elevation: 2.0,
-                    fillColor: Colors.white,
-                    padding: const EdgeInsets.all(15.0),
-                    shape: const CircleBorder(),
-                    child: const Icon(CupertinoIcons.clear_circled,
-                        size: 40, color: Color.fromARGB(255, 132, 18, 18)),
-                  ),
-                  RawMaterialButton(
-                    onPressed: () {
-                      _matchEngine.currentItem?.like();
-                    },
-                    elevation: 2.0,
-                    fillColor: Colors.white,
-                    padding: const EdgeInsets.all(15.0),
-                    shape: const CircleBorder(),
-                    child: const Icon(CupertinoIcons.heart,
-                        size: 40, color: Color.fromARGB(255, 15, 128, 15)),
-                  ),
-                ],
-              )
-            ])
-          : Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Column(children: [
-                    SizedBox(
-                      height: 32,
-                      width: 150,
-                      child: TextButton(
-                          style: ButtonStyle(
-                            foregroundColor:
-                                MaterialStateProperty.all<Color>(Colors.white),
-                            backgroundColor:
-                                MaterialStateProperty.all<Color>(Colors.blue),
-                            overlayColor:
-                                MaterialStateProperty.resolveWith<Color?>(
-                              (Set<MaterialState> states) {
-                                if (states.contains(MaterialState.hovered)) {
-                                  return Colors.blue.withOpacity(0.04);
-                                }
-                                if (states.contains(MaterialState.focused) ||
-                                    states.contains(MaterialState.pressed)) {
-                                  return Colors.blue.withOpacity(0.12);
-                                }
-                                return null; // Defer to the widget's default.
-                              },
-                            ),
-                          ),
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) => ResultsPage(
-                                  title: 'Results',
-                                  matches: _matches,
-                                ),
-                              ),
-                            );
-                          },
-                          child: Center(
-                              child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [Text('View Results ')],
-                          ))),
-                    ),
-                  ]),
-                ],
-              ),
-            ),
-    );
+                  });
+                  return Container();
+                },
+              )));
   }
 }

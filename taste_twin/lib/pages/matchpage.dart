@@ -245,6 +245,8 @@ class _MatchPage extends State<MatchPage> {
                 )
               ])
             : Center(child: Builder(
+                //if the current user = numUsers.length(), go to results
+                // ELSE: go to next person page
                 builder: (context) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     Navigator.pushReplacement(

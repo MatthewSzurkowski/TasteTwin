@@ -67,16 +67,16 @@ class _MatchPage extends State<MatchPage> {
               color: Colors.white),
           likeAction: () {
             _handleLikedRestaurant(i);
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("Liked ${tempRestaurantList[i].name}"),
-              duration: const Duration(milliseconds: 500),
-            ));
+            // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            //   content: Text("Liked ${tempRestaurantList[i].name}"),
+            //   duration: const Duration(milliseconds: 500),
+            // ));
           },
           nopeAction: () {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("Nope ${tempRestaurantList[i].name}"),
-              duration: const Duration(milliseconds: 500),
-            ));
+            // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            //   content: Text("Nope ${tempRestaurantList[i].name}"),
+            //   duration: const Duration(milliseconds: 500),
+            // ));
           },
           superlikeAction: () {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(

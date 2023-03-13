@@ -50,14 +50,6 @@ class _MatchPage extends State<MatchPage> {
   List<Restaurant> _matches = <Restaurant>[];
   late MatchEngine _matchEngine;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-  List<String> _names = ["Red", "Blue", "Green", "Yellow", "Orange"];
-  List<Color> _colors = [
-    Colors.red,
-    Colors.blue,
-    Colors.green,
-    Colors.yellow,
-    Colors.orange
-  ];
 
   @override
   void initState() {
@@ -71,7 +63,7 @@ class _MatchPage extends State<MatchPage> {
               type: tempRestaurantList[i].type,
               description: tempRestaurantList[i].description,
               pictureUrl: tempRestaurantList[i].pictureURL,
-              color: _colors[i % _colors.length]),
+              color: Colors.white),
           likeAction: () {
             _handleLikedRestaurant(i);
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -136,7 +128,7 @@ class _MatchPage extends State<MatchPage> {
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
                       alignment: Alignment.center,
-                      color: _swipeItems[index].content.color,
+                      color: Colors.white,
                       child: Stack(
                         children: [
                           Container(

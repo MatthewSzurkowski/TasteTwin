@@ -79,10 +79,10 @@ class _MatchPage extends State<MatchPage> {
             // ));
           },
           superlikeAction: () {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("Superliked ${tempRestaurantList[i].name}"),
-              duration: const Duration(milliseconds: 500),
-            ));
+            // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            //   content: Text("Superliked ${tempRestaurantList[i].name}"),
+            //   duration: const Duration(milliseconds: 500),
+            // ));
           },
           onSlideUpdate: (SlideRegion? region) async {
             print("Region $region");

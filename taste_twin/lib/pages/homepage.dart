@@ -6,7 +6,8 @@ import 'package:taste_twin/pages/results_page.dart';
 import '../components/MainDrawer.dart';
 import 'filterspage.dart';
 import 'matchpage.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -37,7 +38,19 @@ class _MyHomePageState extends State<MyHomePage> {
   //   // });
   // }
 
-  // FirebaseFirestore firestore = FirebaseFirestore.instance;
+  // Firebase.initializeApp(environment.firebase);
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  Stream<QuerySnapshot> getRealtimeUpdates() {
+    return firestore.collection('restaurants').snapshots();
+  }
+
+  // writeToDB() => {
+  //       firestore.collection('restaurants').doc('uKhZ2k7zDczqb3k3MhHI').set({
+  //         'name': 'John Doe',
+  //         'age': 30,
+  //       })
+  //     };
+
   // CollectionReference _collectionRef =
   //     FirebaseFirestore.instance.collection('collection');
 

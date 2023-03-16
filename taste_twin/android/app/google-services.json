@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "637634980391",
+    "firebase_url": "https://taste-twin-default-rtdb.firebaseio.com",
     "project_id": "taste-twin",
     "storage_bucket": "taste-twin.appspot.com"
   },

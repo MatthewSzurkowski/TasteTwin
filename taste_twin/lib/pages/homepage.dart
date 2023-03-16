@@ -8,6 +8,7 @@ import 'filterspage.dart';
 import 'matchpage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -42,6 +43,13 @@ class _MyHomePageState extends State<MyHomePage> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   Stream<QuerySnapshot> getRealtimeUpdates() {
     return firestore.collection('restaurants').snapshots();
+  }
+
+  FirebaseDatabase database = FirebaseDatabase.instance;
+  DatabaseReference ref = FirebaseDatabase.instance.ref();
+  void readDB() async {
+    DatabaseEvent event = await ref.once();
+    print(event.snapshot.value);
   }
 
   // writeToDB() => {
@@ -150,7 +158,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     foregroundColor:
                         MaterialStateProperty.all<Color>(Colors.blue),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    readDB();
+                  },
                   child: const Text('Test'),
                 ),
               ]),

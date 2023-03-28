@@ -3,14 +3,15 @@ class Restaurant {
   final int
       location; //TODO: add proper location and use that value to find distance from user (this is temporary)
   final String type;
+  final bool isFastFood;
   final Map<String, String> menu;
   final String description;
   final String
       pictureURL; // link to a sample picture for the restaurant that can be displayed in the match card
   final String price; // estimated on a 5 point scale
 
-  Restaurant(this.name, this.location, this.type, this.menu, this.description,
-      this.pictureURL, this.price);
+  Restaurant(this.name, this.location, this.type, this.isFastFood, this.menu,
+      this.description, this.pictureURL, this.price);
 }
 
 final List<Restaurant> tempRestaurantList = [
@@ -18,6 +19,7 @@ final List<Restaurant> tempRestaurantList = [
     "The WORKS",
     10,
     "Hamburger",
+    false,
     {
       "Big Burger": "It is a pretty large burger - \$18",
       "Best Burger": "This is our best burger - \$22",
@@ -30,6 +32,7 @@ final List<Restaurant> tempRestaurantList = [
     "Fairly Italian",
     24,
     "Italian",
+    false,
     {
       "Perfect Pasta": "This is good, you should eat it - \$15",
       "Passable Pasta": "This is more of a risk, but economical - \$8",
@@ -43,6 +46,7 @@ final List<Restaurant> tempRestaurantList = [
     "Blanc Menu",
     12,
     "French",
+    false,
     {},
     "Hip and upscale restauarant specializing in French cuisine.",
     "https://media.istockphoto.com/id/157421404/photo/french-baguettes-and-wine.jpg?s=612x612&w=0&k=20&c=Dct0A4GFRloResX5hZUGKvK-DX1Pzik1mm6AIlgjse0=",
@@ -52,6 +56,7 @@ final List<Restaurant> tempRestaurantList = [
     "Terrific Tacos",
     18,
     "Mexican",
+    true,
     {
       "Two Tacos": "Two of our finest tacos - \$6",
       "Twenty Tacos": "Twenty of our finest tacos - \$10",
@@ -65,6 +70,7 @@ final List<Restaurant> tempRestaurantList = [
     "Steak & Shake",
     19,
     "American",
+    true,
     {
       "Steak": " - \$4",
       "Milkshake": " - \$44",
@@ -77,6 +83,7 @@ final List<Restaurant> tempRestaurantList = [
     "The WORKS",
     10,
     "Hamburger",
+    false,
     {
       "Big Burger": "It is a pretty large burger - \$18",
       "Best Burger": "This is our best burger - \$22",
@@ -89,6 +96,7 @@ final List<Restaurant> tempRestaurantList = [
     "Fairly Italian",
     24,
     "Italian",
+    false,
     {
       "Perfect Pasta": "This is good, you should eat it - \$15",
       "Passable Pasta": "This is more of a risk, but economical - \$8",
@@ -102,6 +110,7 @@ final List<Restaurant> tempRestaurantList = [
     "Blanc Menu",
     12,
     "French",
+    false,
     {},
     "Hip and upscale restauarant specializing in French cuisine.",
     "https://unsplash.com/photos/nmpW_WwwVSc",
@@ -111,6 +120,7 @@ final List<Restaurant> tempRestaurantList = [
     "Terrific Tacos",
     18,
     "Mexican",
+    false,
     {
       "Two Tacos": "Two of our finest tacos - \$6",
       "Twenty Tacos": "Twenty of our finest tacos - \$10",
@@ -124,6 +134,7 @@ final List<Restaurant> tempRestaurantList = [
     "Steak & Shake",
     19,
     "American",
+    false,
     {
       "Steak": " - \$4",
       "Milkshake": " - \$44",

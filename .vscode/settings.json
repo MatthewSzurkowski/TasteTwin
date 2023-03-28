@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "${workspaceFolder}/taste_twin/linux"
+    "cmake.sourceDirectory": "${workspaceFolder}/taste_twin/linux",
+    "cmake.configureOnOpen": false
 }

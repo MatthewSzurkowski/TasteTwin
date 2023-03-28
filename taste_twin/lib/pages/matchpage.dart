@@ -1,11 +1,15 @@
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:swipe_cards/draggable_card.dart';
 // import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:swipe_cards/swipe_cards.dart';
+import 'package:taste_twin/components/rest.dart';
 import 'package:taste_twin/pages/nextPerson.dart';
 import 'results_page.dart';
 import 'package:taste_twin/models/restaurant.dart';
+// import 'package:taste_twin/components/timer.dart';
 
 class Content {
   final String text;
@@ -30,16 +34,6 @@ class Content {
 
 class MatchPage extends StatefulWidget {
   const MatchPage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
@@ -51,9 +45,15 @@ class _MatchPage extends State<MatchPage> {
   List<Restaurant> _matches = <Restaurant>[];
   late MatchEngine _matchEngine;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+  int startTimeInt = 0;
 
   @override
   void initState() {
+    DateTime now = DateTime.now();
+
+    var startTime = "${now.hour}${now.minute}${now.second}";
+    startTimeInt = int.parse(startTime);
+
     for (int i = 0; i < tempRestaurantList.length; i++) {
       _swipeItems.add(SwipeItem(
           content: Content(
@@ -66,27 +66,22 @@ class _MatchPage extends State<MatchPage> {
               pictureUrl: tempRestaurantList[i].pictureURL,
               color: Colors.white),
           likeAction: () {
+            DateTime now = DateTime.now();
+
+            var endTime = "${now.hour}${now.minute}${now.second}";
+            int endTimeInt = int.parse(endTime);
+
+            int difference = endTimeInt - startTimeInt;
+            print("EndTime = ");
+            print(endTimeInt);
+
+            print("Time difference");
+            print(difference);
+
             _handleLikedRestaurant(i);
-            // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            //   content: Text("Liked ${tempRestaurantList[i].name}"),
-            //   duration: const Duration(milliseconds: 500),
-            // ));
           },
-          nopeAction: () {
-            // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            //   content: Text("Nope ${tempRestaurantList[i].name}"),
-            //   duration: const Duration(milliseconds: 500),
-            // ));
-          },
-          superlikeAction: () {
-            // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            //   content: Text("Superliked ${tempRestaurantList[i].name}"),
-            //   duration: const Duration(milliseconds: 500),
-            // ));
-          },
-          onSlideUpdate: (SlideRegion? region) async {
-            print("Region $region");
-          }));
+          nopeAction: () {},
+          onSlideUpdate: (SlideRegion? region) async {}));
     }
 
     _matchEngine = MatchEngine(swipeItems: _swipeItems);
@@ -103,20 +98,18 @@ class _MatchPage extends State<MatchPage> {
 
   void _handleLikedRestaurant(int index) {
     _matches.add(tempRestaurantList[index]);
+
+    // Rest restaurantObject = Rest();
+    // restaurantObject.addRestaurant(tempRestaurantList[index]);
+    // restaurantObject.setTime(timeCount);
+
+    // _matches.add(restaurantObject);
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
         appBar: AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
           title: Text(widget.title),
         ),
         body: _showSwipeCards
@@ -210,9 +203,14 @@ class _MatchPage extends State<MatchPage> {
                       _handleStackFinished();
                     },
                     itemChanged: (SwipeItem item, int index) {
+                      DateTime now = DateTime.now();
+
+                      var startTime = "${now.hour}${now.minute}${now.second}";
+                      startTimeInt = int.parse(startTime);
+
                       print("item: ${item.content.text}, index: $index");
                     },
-                    upSwipeAllowed: true,
+                    upSwipeAllowed: false,
                     fillSpace: true,
                   ),
                 ),
@@ -245,8 +243,6 @@ class _MatchPage extends State<MatchPage> {
                 )
               ])
             : Center(child: Builder(
-                //if the current user = numUsers.length(), go to results
-                // ELSE: go to next person page
                 builder: (context) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     Navigator.pushReplacement(

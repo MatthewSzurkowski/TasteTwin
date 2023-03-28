@@ -13,6 +13,10 @@ class ResultsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //Sort the list
+    List<Rest> sortedMatches = matches;
+    sortedMatches.sort((a, b) => a.getTime().compareTo(b.getTime()));
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Results"),
@@ -81,18 +85,18 @@ class ResultsPage extends StatelessWidget {
                                 size: 40,
                               )
                             ]),
-                        title: Text(matches[index].getResaurant().name),
+                        title: Text(sortedMatches[index].getResaurant().name),
                         subtitle: Text(
-                          "${matches[index].getResaurant().type} - ${matches[index].getResaurant().price}",
+                          "${sortedMatches[index].getResaurant().type} - ${sortedMatches[index].getResaurant().price}",
                           style: const TextStyle(fontSize: 12),
                         ),
                         children: [
-                          Text(matches[index].getResaurant().description),
+                          Text(sortedMatches[index].getResaurant().description),
                           const SizedBox(
                             height: 10,
                           ),
                           Text(
-                            "Only ${matches[index].getResaurant().location} km from you.",
+                            "Only ${sortedMatches[index].getResaurant().location} km from you.",
                             style: const TextStyle(fontSize: 12),
                           )
                         ],
@@ -105,7 +109,7 @@ class ResultsPage extends StatelessWidget {
                       ),
                     ]);
                   }),
-                  itemCount: matches.length,
+                  itemCount: sortedMatches.length,
                 ),
               ),
             ),

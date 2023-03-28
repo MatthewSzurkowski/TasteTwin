@@ -70,13 +70,7 @@ class _MatchPage extends State<MatchPage> {
 
             var endTime = "${now.hour}${now.minute}${now.second}";
             int endTimeInt = int.parse(endTime);
-
             int difference = endTimeInt - startTimeInt;
-            print("EndTime = ");
-            print(endTimeInt);
-
-            print("Time difference");
-            print(difference);
 
             _handleLikedRestaurant(difference, i);
           },
@@ -97,8 +91,6 @@ class _MatchPage extends State<MatchPage> {
   }
 
   void _handleLikedRestaurant(int time, int index) {
-    // _matches.add(tempRestaurantList[index]);
-
     Rest restaurantObject = Rest();
     restaurantObject.setRestaurant(tempRestaurantList[index]);
     restaurantObject.setTime(time);

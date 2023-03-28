@@ -62,7 +62,10 @@ class MainDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const FiltersPage(title: 'Filters')),
+                    builder: (context) => FiltersPage(
+                          title: 'Filters',
+                          preferences: 'test',
+                        )),
               );
             },
           ),

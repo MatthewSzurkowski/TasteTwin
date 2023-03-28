@@ -42,7 +42,7 @@ class MatchPage extends StatefulWidget {
 
 class _MatchPage extends State<MatchPage> {
   List<SwipeItem> _swipeItems = <SwipeItem>[];
-  List<Restaurant> _matches = <Restaurant>[];
+  List<Rest> _matches = <Rest>[];
   late MatchEngine _matchEngine;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   int startTimeInt = 0;
@@ -78,7 +78,7 @@ class _MatchPage extends State<MatchPage> {
             print("Time difference");
             print(difference);
 
-            _handleLikedRestaurant(i);
+            _handleLikedRestaurant(difference, i);
           },
           nopeAction: () {},
           onSlideUpdate: (SlideRegion? region) async {}));
@@ -96,14 +96,14 @@ class _MatchPage extends State<MatchPage> {
     });
   }
 
-  void _handleLikedRestaurant(int index) {
-    _matches.add(tempRestaurantList[index]);
+  void _handleLikedRestaurant(int time, int index) {
+    // _matches.add(tempRestaurantList[index]);
 
-    // Rest restaurantObject = Rest();
-    // restaurantObject.addRestaurant(tempRestaurantList[index]);
-    // restaurantObject.setTime(timeCount);
+    Rest restaurantObject = Rest();
+    restaurantObject.setRestaurant(tempRestaurantList[index]);
+    restaurantObject.setTime(time);
 
-    // _matches.add(restaurantObject);
+    _matches.add(restaurantObject);
   }
 
   @override

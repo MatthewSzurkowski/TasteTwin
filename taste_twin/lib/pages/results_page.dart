@@ -2,14 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taste_twin/models/restaurant.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import '../components/rest.dart';
 import 'homepage.dart';
 
 // Page to display the results of the matching process. Shows a list of
 // restauarants ranked based on the matches between those who used the app.
 class ResultsPage extends StatelessWidget {
   const ResultsPage({super.key, required this.matches, required String title});
-
-  final List<Restaurant> matches;
+  final List<Rest> matches;
 
   @override
   Widget build(BuildContext context) {
@@ -81,18 +81,18 @@ class ResultsPage extends StatelessWidget {
                                 size: 40,
                               )
                             ]),
-                        title: Text(matches[index].name),
+                        title: Text(matches[index].getResaurant().name),
                         subtitle: Text(
-                          "${matches[index].type} - ${matches[index].price}",
+                          "${matches[index].getResaurant().type} - ${matches[index].getResaurant().price}",
                           style: const TextStyle(fontSize: 12),
                         ),
                         children: [
-                          Text(matches[index].description),
+                          Text(matches[index].getResaurant().description),
                           const SizedBox(
                             height: 10,
                           ),
                           Text(
-                            "Only ${matches[index].location} km from you.",
+                            "Only ${matches[index].getResaurant().location} km from you.",
                             style: const TextStyle(fontSize: 12),
                           )
                         ],

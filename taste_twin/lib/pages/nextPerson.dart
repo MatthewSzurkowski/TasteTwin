@@ -5,13 +5,14 @@ import 'package:swipe_cards/draggable_card.dart';
 // import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import 'package:taste_twin/models/restaurant.dart';
+import '../components/rest.dart';
 import 'results_page.dart';
 import 'homepage.dart';
 
 class NextPersonPage extends StatefulWidget {
   //REMOVE MATCHES LATER
   const NextPersonPage({super.key, required this.title, required this.matches});
-  final List<Restaurant> matches;
+  final List<Rest> matches;
   final String title;
 
   @override
@@ -21,7 +22,7 @@ class NextPersonPage extends StatefulWidget {
 class _NextPersonPage extends State<NextPersonPage> {
   @override
   Widget build(BuildContext context) {
-    List<Restaurant> matches = widget.matches;
+    List<Rest> matches = widget.matches;
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //

@@ -1,19 +1,15 @@
 import '../models/restaurant.dart';
 
 class Rest {
-  List<Restaurant>? tempRestaurantList = null;
+  Restaurant? restList = null;
   int time = 0;
 
-  addRestaurant(Restaurant restaurant) {
-    tempRestaurantList!.add(restaurant);
+  setRestaurant(Restaurant restaurant) {
+    restList = restaurant;
   }
 
-  removeRestaurant(Restaurant restaurant) {
-    tempRestaurantList!.remove(restaurant);
-  }
-
-  getResaurantList() {
-    return tempRestaurantList;
+  getResaurant() {
+    return restList;
   }
 
   int getTime() {

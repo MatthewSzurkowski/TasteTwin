@@ -6,10 +6,32 @@ import 'package:swipe_cards/draggable_card.dart';
 // import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import 'package:taste_twin/components/rest.dart';
+import 'package:taste_twin/components/userDetails.dart';
 import 'package:taste_twin/pages/nextPerson.dart';
 import 'results_page.dart';
 import 'package:taste_twin/models/restaurant.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // import 'package:taste_twin/components/timer.dart';
+
+final UserDetailsProvider =
+    StateNotifierProvider<UserDetailsNotifier, UserDetails>((ref) {
+  // Create an instance of the Preferences class
+  UserDetails preferences = UserDetails(
+    numUsers: 2,
+    matches: [],
+  );
+
+  return UserDetailsNotifier(preferences);
+});
+
+class UserDetailsNotifier extends StateNotifier<UserDetails> {
+  UserDetailsNotifier(UserDetails preferences) : super(preferences);
+
+  void addMatch(List<Rest> match) {
+    state.matches.add(match);
+  }
+}
 
 class Content {
   final String text;
@@ -46,6 +68,7 @@ class _MatchPage extends State<MatchPage> {
   late MatchEngine _matchEngine;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   int startTimeInt = 0;
+  int interations = 0;
 
   @override
   void initState() {
@@ -192,7 +215,21 @@ class _MatchPage extends State<MatchPage> {
                       );
                     },
                     onStackFinished: () {
-                      _handleStackFinished();
+                      interations += 1;
+
+                      if (interations < state.numUsers) {
+                        userPreferences
+                        state.addMatch(_matches);
+                        _matches = <Rest>[];
+                        _showSwipeCards = true;
+
+                      }
+                      else 
+                      {
+                        state.addMatch(_matches);
+                        _handleStackFinished();
+
+                      }
                     },
                     itemChanged: (SwipeItem item, int index) {
                       DateTime now = DateTime.now();

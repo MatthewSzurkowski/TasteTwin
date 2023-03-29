@@ -147,8 +147,12 @@ class _MatchPage extends State<MatchPage> {
                     matchEngine: _matchEngine,
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
+                        decoration: BoxDecoration(
+                            color: _swipeItems[index].content.color,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10))),
+                        margin: const EdgeInsets.all(8),
                         alignment: Alignment.center,
-                        color: _swipeItems[index].content.color,
                         child: card(_swipeItems[index]),
                       );
                     },
@@ -218,6 +222,7 @@ class _MatchPage extends State<MatchPage> {
               children: [
                 Container(
                   decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
                     image: DecorationImage(
                       image: NetworkImage(item.content.pictureUrl),
                       fit: BoxFit.fitHeight,
@@ -226,6 +231,7 @@ class _MatchPage extends State<MatchPage> {
                 ),
                 Container(
                   decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
                     gradient: LinearGradient(
                       begin: Alignment(0, 0),
                       end: Alignment(0, 1),
@@ -263,7 +269,7 @@ class _MatchPage extends State<MatchPage> {
                       ),
                     ),
                     Padding(
-                        padding: const EdgeInsets.all(18.0),
+                        padding: const EdgeInsets.all(10.0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           crossAxisAlignment: CrossAxisAlignment.end,
@@ -272,8 +278,6 @@ class _MatchPage extends State<MatchPage> {
                               onPressed: () {
                                 // Toggle if card is flipped or not.
                                 _flipCard(item);
-                                print(
-                                    "Clicked, the card is flipped? $_isCardFlipped");
                               },
                               icon: const Icon(CupertinoIcons.info,
                                   size: 40, color: Colors.white),
@@ -286,7 +290,6 @@ class _MatchPage extends State<MatchPage> {
             )
           : Container(
               width: 400,
-              margin: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(10)),
                   border: Border.all(color: Colors.blue, width: 2)),

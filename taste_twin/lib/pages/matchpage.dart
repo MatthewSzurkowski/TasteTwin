@@ -11,11 +11,11 @@ class Content {
   final String text;
   final Color color;
   final String name;
-  final int location;
-  final String price;
-  final String type;
-  final String description;
-  final String pictureUrl;
+  final double? location;
+  final String? price;
+  final String? type;
+  final String? description;
+  final String? pictureUrl;
 
   Content(
       {required this.text,

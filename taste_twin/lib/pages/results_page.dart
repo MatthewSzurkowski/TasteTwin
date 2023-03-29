@@ -87,7 +87,7 @@ class ResultsPage extends StatelessWidget {
                           style: const TextStyle(fontSize: 12),
                         ),
                         children: [
-                          Text(matches[index].description),
+                          Text(matches[index].description.toString()),
                           const SizedBox(
                             height: 10,
                           ),

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,84 +32,50 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // void _incrementCounter() {
-  //   // setState(() {
-  //   //   // This call to setState tells the Flutter framework that something has
-  //   //   // changed in this State, which causes it to rerun the build method below
-  //   //   // so that the display can reflect the updated values. If we changed
-  //   //   // _counter without calling setState(), then the build method would not be
-  //   //   // called again, and so nothing would appear to happen.
-  //   // });
-  // }
-
-  // Firebase.initializeApp(environment.firebase);
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
-  Stream<QuerySnapshot> getRealtimeUpdates() {
-    return firestore.collection('restaurants').snapshots();
-  }
-
   void parseJSON(String jsonString) {
-    print('jsonString: ' + jsonString);
+    // Testing method to parse the JSON string given from the database and print out data
     List<dynamic> jsonList = json.decode(jsonString);
 
-    // for (dynamic json in jsonList) {
-    //   int priceLevel = json['price_level'];
-    //   String name = json['name'];
-    //   String description = json['description'];
-    //   bool isFastFood = json['isFastFood'];
-    //   String location = json['location'];
-    //   String photoUrl = json['photo_url'];
-    //   String type = json['type'];
-    //   double distanceGuelph = json['distanceGuelph'];
+    for (dynamic json in jsonList) {
+      int priceLevel = json['price_level'];
+      String name = json['name'];
+      String? description = json['description'];
+      bool isFastFood = json['isFastFood'];
+      String location = json['location'];
+      String photoUrl = json['photo_url'];
+      String type = json['type'];
+      double distanceGuelph = json['distanceGuelph'];
 
-    //   print('Price Level: $priceLevel');
-    //   print('Name: $name');
-    //   print('Description: $description');
-    //   print('Is Fast Food: $isFastFood');
-    //   print('Location: $location');
-    //   print('Photo URL: $photoUrl');
-    //   print('Type: $type');
-    //   print('Distance to Guelph: $distanceGuelph km');
-    // }
+      print('Price Level: $priceLevel');
+      print('Name: $name');
+      print('Description: $description');
+      print('Is Fast Food: $isFastFood');
+      print('Location: $location');
+      print('Photo URL: $photoUrl');
+      print('Type: $type');
+      print('Distance to Guelph: $distanceGuelph km');
+    }
+  }
+
+  List<Restaurant> parseRestaurants(String responseBody) {
+    // This method parses the JSON response from the database and creates
+    // restaurant objects for each JSON object and returns them in a list.
+    final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+
+    return parsed.map<Restaurant>((json) => Restaurant.fromJson(json)).toList();
   }
 
   void readDB() async {
     FirebaseDatabase database = FirebaseDatabase.instance;
     DatabaseReference ref = FirebaseDatabase.instance.ref();
     DatabaseEvent event = await ref.once();
-    Object? data = event.snapshot.value;
+
     String dataStr = event.snapshot.value.toString();
-    print(data);
 
-    parseJSON(dataStr);
-    // print(event.snapshot.value);
-
-    // data?.forEach((key, value) {}
-
-    // for (int i = 0; i < event.snapshot.value!.length; i++) {
-    //   print(event.snapshot.value[i]);
-    // }
+    // parseJSON(dataStr);
+    List<Restaurant> resList = parseRestaurants(dataStr);
+    resList.forEach((Restaurant res) => print(res.name));
   }
-
-  // writeToDB() => {
-  //       firestore.collection('restaurants').doc('uKhZ2k7zDczqb3k3MhHI').set({
-  //         'name': 'John Doe',
-  //         'age': 30,
-  //       })
-  //     };
-
-  // CollectionReference _collectionRef =
-  //     FirebaseFirestore.instance.collection('collection');
-
-  // Future<void> getData() async {
-  //   // Get docs from collection reference
-  //   QuerySnapshot querySnapshot = await _collectionRef.get();
-
-  //   // Get data from docs and convert map to List
-  //   final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
-
-  //   print(allData);
-  // }
 
   @override
   Widget build(BuildContext context) {

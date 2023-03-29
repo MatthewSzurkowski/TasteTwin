@@ -16,6 +16,15 @@ class Content {
   final String type;
   final String description;
   final String pictureUrl;
+  bool isCardFlipped;
+
+  void setIsCardFlipped(bool value) {
+    isCardFlipped = value;
+  }
+
+  bool getIsCardFlipped() {
+    return isCardFlipped;
+  }
 
   Content(
       {required this.text,
@@ -25,7 +34,8 @@ class Content {
       required this.price,
       required this.type,
       required this.description,
-      required this.pictureUrl});
+      required this.pictureUrl,
+      required this.isCardFlipped});
 }
 
 class MatchPage extends StatefulWidget {
@@ -57,6 +67,7 @@ class _MatchPage extends State<MatchPage> {
     for (int i = 0; i < tempRestaurantList.length; i++) {
       _swipeItems.add(SwipeItem(
           content: Content(
+              isCardFlipped: false,
               text: tempRestaurantList[i].name,
               name: tempRestaurantList[i].name,
               location: tempRestaurantList[i].location,
@@ -94,6 +105,7 @@ class _MatchPage extends State<MatchPage> {
   }
 
   bool _showSwipeCards = true;
+  bool _isCardFlipped = false;
 
   void _handleStackFinished() {
     setState(() {
@@ -103,6 +115,13 @@ class _MatchPage extends State<MatchPage> {
 
   void _handleLikedRestaurant(int index) {
     _matches.add(tempRestaurantList[index]);
+  }
+
+  // Toggle if card is flipped or not.
+  void _flipCard(SwipeItem item) {
+    setState(() {
+      item.content.setIsCardFlipped(!item.content.getIsCardFlipped());
+    });
   }
 
   @override
@@ -193,72 +212,138 @@ class _MatchPage extends State<MatchPage> {
 
   // Builds the card displaying a restauarant.
   Widget card(SwipeItem item) {
-    return Stack(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: NetworkImage(item.content.pictureUrl),
-              fit: BoxFit.fitHeight,
-            ),
-          ),
-        ),
-        Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment(0, 0),
-              end: Alignment(0, 1),
-              colors: [
-                Colors.transparent,
-                Colors.black,
-              ],
-            ),
-          ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.content.name,
-                    style: const TextStyle(
-                        fontSize: 20,
-                        color: Color.fromARGB(255, 255, 255, 255)),
+    return Container(
+      child: !item.content.getIsCardFlipped()
+          ? Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(item.content.pictureUrl),
+                      fit: BoxFit.fitHeight,
+                    ),
                   ),
-                  Text(item.content.price,
-                      style: const TextStyle(
-                          fontSize: 20,
-                          color: Color.fromARGB(255, 255, 255, 255))),
-                  Text("${item.content.location} kms away",
-                      style: const TextStyle(
-                          fontSize: 20,
-                          color: Color.fromARGB(255, 255, 255, 255))),
+                ),
+                Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment(0, 0),
+                      end: Alignment(0, 1),
+                      colors: [
+                        Colors.transparent,
+                        Colors.black,
+                      ],
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.content.name,
+                            style: const TextStyle(
+                                fontSize: 20,
+                                color: Color.fromARGB(255, 255, 255, 255)),
+                          ),
+                          Text(item.content.price,
+                              style: const TextStyle(
+                                  fontSize: 20,
+                                  color: Color.fromARGB(255, 255, 255, 255))),
+                          Text("${item.content.location} kms away",
+                              style: const TextStyle(
+                                  fontSize: 20,
+                                  color: Color.fromARGB(255, 255, 255, 255))),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                // Toggle if card is flipped or not.
+                                _flipCard(item);
+                                print(
+                                    "Clicked, the card is flipped? $_isCardFlipped");
+                              },
+                              icon: const Icon(CupertinoIcons.info,
+                                  size: 40, color: Colors.white),
+                            )
+                          ],
+                        ))
+                  ],
+                )
+              ],
+            )
+          : Container(
+              width: 400,
+              margin: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  border: Border.all(color: Colors.blue, width: 2)),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 8),
+                          const Text(
+                            "Description",
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            "${item.content.description}",
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            "Location",
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            "${item.content.location} km away.",
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            _flipCard(item);
+                          },
+                          icon: const Icon(CupertinoIcons.info,
+                              size: 40, color: Colors.blue),
+                        )
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
-            Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        print("Clicked");
-                      },
-                      icon: const Icon(CupertinoIcons.info,
-                          size: 40, color: Colors.white),
-                    )
-                  ],
-                ))
-          ],
-        )
-      ],
     );
   }
 }

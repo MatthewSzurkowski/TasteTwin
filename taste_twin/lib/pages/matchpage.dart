@@ -105,7 +105,6 @@ class _MatchPage extends State<MatchPage> {
   }
 
   bool _showSwipeCards = true;
-  bool _isCardFlipped = false;
 
   void _handleStackFinished() {
     setState(() {

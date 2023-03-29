@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
@@ -45,11 +47,47 @@ class _MyHomePageState extends State<MyHomePage> {
     return firestore.collection('restaurants').snapshots();
   }
 
-  FirebaseDatabase database = FirebaseDatabase.instance;
-  DatabaseReference ref = FirebaseDatabase.instance.ref();
+  void parseJSON(String jsonString) {
+    print('jsonString: ' + jsonString);
+    List<dynamic> jsonList = json.decode(jsonString);
+
+    // for (dynamic json in jsonList) {
+    //   int priceLevel = json['price_level'];
+    //   String name = json['name'];
+    //   String description = json['description'];
+    //   bool isFastFood = json['isFastFood'];
+    //   String location = json['location'];
+    //   String photoUrl = json['photo_url'];
+    //   String type = json['type'];
+    //   double distanceGuelph = json['distanceGuelph'];
+
+    //   print('Price Level: $priceLevel');
+    //   print('Name: $name');
+    //   print('Description: $description');
+    //   print('Is Fast Food: $isFastFood');
+    //   print('Location: $location');
+    //   print('Photo URL: $photoUrl');
+    //   print('Type: $type');
+    //   print('Distance to Guelph: $distanceGuelph km');
+    // }
+  }
+
   void readDB() async {
+    FirebaseDatabase database = FirebaseDatabase.instance;
+    DatabaseReference ref = FirebaseDatabase.instance.ref();
     DatabaseEvent event = await ref.once();
-    print(event.snapshot.value);
+    Object? data = event.snapshot.value;
+    String dataStr = event.snapshot.value.toString();
+    print(data);
+
+    parseJSON(dataStr);
+    // print(event.snapshot.value);
+
+    // data?.forEach((key, value) {}
+
+    // for (int i = 0; i < event.snapshot.value!.length; i++) {
+    //   print(event.snapshot.value[i]);
+    // }
   }
 
   // writeToDB() => {

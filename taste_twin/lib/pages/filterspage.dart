@@ -3,86 +3,39 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../components/preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../main.dart';
+import '/components/preferences_provider.dart';
 
-const List<String> list = <String>[
-  "30 Seconds",
-  "1 Minute",
-  "2 Minutes",
-  "3 Minutes",
-  "4 Minutes",
-  "5 Minutes"
-];
+const List<String> list = <String>["1", "2", "3", "4", "5"];
+int numUsersVal = 1;
 
-final preferencesProvider =
-    StateNotifierProvider<PreferencesNotifier, Preferences>((ref) {
-  // Create an instance of the Preferences class
-  Preferences preferences = Preferences(
-      searchDistance: 15,
-      showAmerican: true,
-      showChinese: true,
-      showFastFood: true,
-      showFrench: true,
-      showIndian: true,
-      showItalian: true,
-      showJapanese: true,
-      showMexican: true,
-      time: 1,
-      selectedCuisines: [
-        'Italian',
-        'Chinese',
-        'Mexican',
-        'Indian',
-        'French',
-        'Japanese',
-        'American'
-      ]);
+// final preferencesProvider =
+//     StateNotifierProvider<PreferencesNotifier, Preferences>((ref) {
+//   // Create an instance of the Preferences class
+//   Preferences preferences = Preferences(
+//       searchDistance: 15,
+//       showAmerican: true,
+//       showChinese: true,
+//       showFastFood: true,
+//       showFrench: true,
+//       showIndian: true,
+//       showItalian: true,
+//       showJapanese: true,
+//       showMexican: true,
+//       time: 1,
+//       selectedCuisines: [
+//         'Italian',
+//         'Chinese',
+//         'Mexican',
+//         'Indian',
+//         'French',
+//         'Japanese',
+//         'American'
+//       ]);
 
-  // Return a PreferencesNotifier with the created instance of Preferences
-  return PreferencesNotifier(preferences);
-});
-
-class PreferencesNotifier extends StateNotifier<Preferences> {
-  PreferencesNotifier(Preferences preferences) : super(preferences);
-
-  // Create a method to set a variable in Preferences and update the state
-  void setSearchDistance(double newValue) {
-    state.searchDistance = newValue;
-  }
-
-  void setFastFood(bool newValue) {
-    state.showFastFood = newValue;
-  }
-
-  void setSelectedCuisines(List<dynamic> values) {
-    state.selectedCuisines = values;
-  }
-
-  List<String> get selectedCuisines {
-    var chosenCuisines = <String>[];
-    if (state.showItalian) {
-      chosenCuisines.add("Italian");
-    }
-    if (state.showChinese) {
-      chosenCuisines.add("Chinese");
-    }
-    if (state.showMexican) {
-      chosenCuisines.add("Mexican");
-    }
-    if (state.showIndian) {
-      chosenCuisines.add("Indian");
-    }
-    if (state.showFrench) {
-      chosenCuisines.add("French");
-    }
-    if (state.showJapanese) {
-      chosenCuisines.add("Japanese");
-    }
-    if (state.showAmerican) {
-      chosenCuisines.add("American");
-    }
-    return chosenCuisines;
-  }
-}
+//   // Return a PreferencesNotifier with the created instance of Preferences
+//   return PreferencesNotifier(preferences);
+// });
 
 class FiltersPage extends StatefulWidget {
   FiltersPage({super.key, required this.title, required String preferences});
@@ -105,14 +58,14 @@ class FiltersPage extends StatefulWidget {
 class _FiltersPage extends State<FiltersPage> {
   // initial value for the slider
   bool showFastFood = true;
-  String eachPersonTimeLimit = "1 minute";
-  String dropdownValue = list.first;
+
   @override
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, _) {
         final notifier = ref.watch(preferencesProvider.notifier);
         final preferences = ref.watch(preferencesProvider);
+        String dropdownValue = notifier.getTime();
         return Scaffold(
           appBar: AppBar(
             title: Text(widget.title),
@@ -135,7 +88,7 @@ class _FiltersPage extends State<FiltersPage> {
                   ],
                 ),
                 Slider(
-                  value: preferences.searchDistance,
+                  value: notifier.getSearchDistance(),
                   min: 0,
                   max: 15,
                   divisions: 3,
@@ -231,7 +184,33 @@ class _FiltersPage extends State<FiltersPage> {
                   children: [
                     const SizedBox(height: 20),
                     const Center(
-                        child: Text('Time For Each Person',
+                        child: Text('Number of Users for Restaurant Selection',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold))),
+                    DropdownButton<int>(
+                      value: numUsersVal,
+                      onChanged: (int? newValue) {
+                        setState(() {
+                          numUsersVal = notifier.setNumUsers(newValue!);
+                        });
+                      },
+                      items: List.generate(
+                        6,
+                        (index) => DropdownMenuItem(
+                          value: index + 1,
+                          child: Text('${index + 1}'),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    const Center(
+                        child: Text('Selection Time for Each User',
+                            textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold))),
                     DropdownButton<String>(
@@ -246,14 +225,15 @@ class _FiltersPage extends State<FiltersPage> {
                         onChanged: (String? value) {
                           // This is called when the user selects an item.
                           setState(() {
-                            dropdownValue = value!;
+                            dropdownValue = notifier.setTime(value!);
                           });
                         },
                         items:
                             list.map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
-                            child: Text(value),
+                            child: Text(
+                                "$value ${value.contains('1') ? 'Minute' : 'Minutes'}"),
                           );
                         }).toList()),
                   ],

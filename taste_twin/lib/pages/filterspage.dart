@@ -5,12 +5,17 @@ import '../components/preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../main.dart';
 import '/components/preferences_provider.dart';
+import '../components/MainDrawer.dart';
 
 const List<String> list = <String>["1", "2", "3", "4", "5"];
 int numUsersVal = 1;
 
 class FiltersPage extends StatefulWidget {
-  FiltersPage({super.key, required this.title, required String preferences});
+  const FiltersPage(
+      {super.key,
+      required this.title,
+      required String preferences,
+      required this.isDrawerVisible});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -20,16 +25,19 @@ class FiltersPage extends StatefulWidget {
   // case the title) provided by the parent (in this case the App widget) and
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
-
+  final bool isDrawerVisible;
   final String title;
 
   @override
-  State<FiltersPage> createState() => _FiltersPage();
+  State<FiltersPage> createState() =>
+      _FiltersPage(isDrawerVisible: isDrawerVisible);
 }
 
 class _FiltersPage extends State<FiltersPage> {
   // initial value for the slider
   bool showFastFood = true;
+  _FiltersPage({required this.isDrawerVisible});
+  final bool isDrawerVisible;
 
   @override
   Widget build(BuildContext context) {
@@ -213,6 +221,11 @@ class _FiltersPage extends State<FiltersPage> {
               ],
             ),
           ),
+          drawer: widget.isDrawerVisible
+              ? const MainDrawer(
+                  currentPage: 'Filters',
+                )
+              : null,
         );
       },
     );

@@ -92,9 +92,11 @@ class _MyHomePageState extends State<MyHomePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (BuildContext context) => FiltersPage(
+                            builder: (BuildContext context) =>
+                                const FiltersPage(
                               title: 'Filters',
                               preferences: "text",
+                              isDrawerVisible: false,
                             ),
                           ),
                         );
@@ -106,7 +108,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
             ),
-            drawer: const MainDrawer());
+            drawer: const MainDrawer(
+              currentPage: 'Homepage',
+            ));
       },
     );
   }

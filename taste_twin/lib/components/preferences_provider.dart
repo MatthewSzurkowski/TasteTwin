@@ -8,6 +8,7 @@ class PreferencesNotifier extends StateNotifier<Preferences> {
           showFastFood: true,
           time: "1",
           numUsers: 1,
+          remUsers: 1,
           selectedCuisines: [
             'Italian',
             'Chinese',
@@ -44,6 +45,14 @@ class PreferencesNotifier extends StateNotifier<Preferences> {
     return state.time;
   }
 
+  int getRemUsers() {
+    return state.remUsers;
+  }
+
+  void decrementUsers() {
+    state.remUsers -= 1;
+  }
+
   void setSelectedCuisines(List<dynamic> values) {
     state.selectedCuisines = values;
   }
@@ -53,6 +62,7 @@ class PreferencesNotifier extends StateNotifier<Preferences> {
   }
 
   int setNumUsers(int value) {
+    state.remUsers = value;
     state.numUsers = value;
     return state.numUsers;
   }

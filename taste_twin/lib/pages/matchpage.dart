@@ -6,6 +6,8 @@ import 'package:swipe_cards/swipe_cards.dart';
 import 'package:taste_twin/pages/nextPerson.dart';
 import 'results_page.dart';
 import 'package:taste_twin/models/restaurant.dart';
+import 'dart:convert';
+import 'package:firebase_database/firebase_database.dart';
 
 class Content {
   final String text;
@@ -51,46 +53,69 @@ class _MatchPage extends State<MatchPage> {
   List<Restaurant> _matches = <Restaurant>[];
   late MatchEngine _matchEngine;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+  List<Restaurant> restaurants = <Restaurant>[];
+
+  List<Restaurant> parseRestaurants(String responseBody) {
+    // This method parses the JSON response from the database and creates
+    // restaurant objects for each JSON object and returns them in a list.
+    final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+
+    return parsed.map<Restaurant>((json) => Restaurant.fromJson(json)).toList();
+  }
+
+  void readDB() async {
+    FirebaseDatabase database = FirebaseDatabase.instance;
+    DatabaseReference ref = FirebaseDatabase.instance.ref();
+    DatabaseEvent event = await ref.once();
+    restaurants = parseRestaurants(event.snapshot.value.toString());
+    // restaurants.forEach((Restaurant res) => print(res.name));
+  }
 
   @override
   void initState() {
-    for (int i = 0; i < tempRestaurantList.length; i++) {
-      _swipeItems.add(SwipeItem(
-          content: Content(
-              text: tempRestaurantList[i].name,
-              name: tempRestaurantList[i].name,
-              location: tempRestaurantList[i].location,
-              price: tempRestaurantList[i].price,
-              type: tempRestaurantList[i].type,
-              description: tempRestaurantList[i].description,
-              pictureUrl: tempRestaurantList[i].pictureURL,
-              color: Colors.white),
-          likeAction: () {
-            _handleLikedRestaurant(i);
-            // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            //   content: Text("Liked ${tempRestaurantList[i].name}"),
-            //   duration: const Duration(milliseconds: 500),
-            // ));
-          },
-          nopeAction: () {
-            // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            //   content: Text("Nope ${tempRestaurantList[i].name}"),
-            //   duration: const Duration(milliseconds: 500),
-            // ));
-          },
-          superlikeAction: () {
-            // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            //   content: Text("Superliked ${tempRestaurantList[i].name}"),
-            //   duration: const Duration(milliseconds: 500),
-            // ));
-          },
-          onSlideUpdate: (SlideRegion? region) async {
-            print("Region $region");
-          }));
-    }
-
-    _matchEngine = MatchEngine(swipeItems: _swipeItems);
     super.initState();
+    readDB();
+    _matchEngine = MatchEngine(swipeItems: _swipeItems);
+    Future.delayed(const Duration(seconds: 2), () {
+      // ignore: avoid_print
+      print("Restaurants length: ${restaurants.length}");
+
+      for (int i = 0; i < restaurants.length; i++) {
+        print(restaurants[i].pictureURL);
+        _swipeItems.add(SwipeItem(
+            content: Content(
+                text: restaurants[i].name,
+                name: restaurants[i].name,
+                location: restaurants[i].location,
+                price: restaurants[i].price,
+                type: restaurants[i].type,
+                description: restaurants[i].description,
+                pictureUrl: restaurants[i].pictureURL,
+                color: Colors.white),
+            likeAction: () {
+              _handleLikedRestaurant(i);
+              // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              //   content: Text("Liked ${restaurants[i].name}"),
+              //   duration: const Duration(milliseconds: 500),
+              // ));
+            },
+            nopeAction: () {
+              // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              //   content: Text("Nope ${restaurants[i].name}"),
+              //   duration: const Duration(milliseconds: 500),
+              // ));
+            },
+            superlikeAction: () {
+              // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              //   content: Text("Superliked ${restaurants[i].name}"),
+              //   duration: const Duration(milliseconds: 500),
+              // ));
+            },
+            onSlideUpdate: (SlideRegion? region) async {
+              print("Region $region");
+            }));
+      }
+    });
   }
 
   bool _showSwipeCards = true;
@@ -102,7 +127,7 @@ class _MatchPage extends State<MatchPage> {
   }
 
   void _handleLikedRestaurant(int index) {
-    _matches.add(tempRestaurantList[index]);
+    _matches.add(restaurants[index]);
   }
 
   @override

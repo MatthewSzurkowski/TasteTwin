@@ -212,6 +212,7 @@ class _MatchPage extends State<MatchPage> {
                         startTimeInt = int.parse(startTime);
 
                         print("item: ${item.content.text}, index: $index");
+                        print(notifier.getRemUsers());
                       },
                       upSwipeAllowed: false,
                       fillSpace: true,
@@ -248,7 +249,7 @@ class _MatchPage extends State<MatchPage> {
               : Center(child: Builder(
                   builder: (context) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                      if (notifier.getRemUsers() > 0) {
+                      if (notifier.getRemUsers() > 1) {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(

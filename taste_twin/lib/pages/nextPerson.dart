@@ -6,6 +6,7 @@ import 'package:swipe_cards/draggable_card.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import 'package:taste_twin/models/restaurant.dart';
 import '../components/rest.dart';
+import './matchpage.dart';
 import 'results_page.dart';
 import 'homepage.dart';
 
@@ -50,9 +51,8 @@ class _NextPersonPage extends State<NextPersonPage> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (BuildContext context) => ResultsPage(
-                            title: 'Results',
-                            matches: matches,
+                          builder: (BuildContext context) => const MatchPage(
+                            title: 'Matches',
                           ),
                         ),
                       );

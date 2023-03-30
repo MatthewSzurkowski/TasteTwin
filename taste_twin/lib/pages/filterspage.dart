@@ -9,34 +9,6 @@ import '/components/preferences_provider.dart';
 const List<String> list = <String>["1", "2", "3", "4", "5"];
 int numUsersVal = 1;
 
-// final preferencesProvider =
-//     StateNotifierProvider<PreferencesNotifier, Preferences>((ref) {
-//   // Create an instance of the Preferences class
-//   Preferences preferences = Preferences(
-//       searchDistance: 15,
-//       showAmerican: true,
-//       showChinese: true,
-//       showFastFood: true,
-//       showFrench: true,
-//       showIndian: true,
-//       showItalian: true,
-//       showJapanese: true,
-//       showMexican: true,
-//       time: 1,
-//       selectedCuisines: [
-//         'Italian',
-//         'Chinese',
-//         'Mexican',
-//         'Indian',
-//         'French',
-//         'Japanese',
-//         'American'
-//       ]);
-
-//   // Return a PreferencesNotifier with the created instance of Preferences
-//   return PreferencesNotifier(preferences);
-// });
-
 class FiltersPage extends StatefulWidget {
   FiltersPage({super.key, required this.title, required String preferences});
 

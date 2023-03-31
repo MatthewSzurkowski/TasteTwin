@@ -1,6 +1,7 @@
 // import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import '../components/MainDrawer.dart';
 
 const List<Widget> icons = <Widget>[
   Icon(CupertinoIcons.brightness),
@@ -72,6 +73,9 @@ class _SettingsPage extends State<SettingsPage> {
               ),
             ]),
           ],
-        )));
+        )),
+        drawer: const MainDrawer(
+          currentPage: 'Settings',
+        ));
   }
 }

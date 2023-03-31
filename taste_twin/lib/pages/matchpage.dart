@@ -15,7 +15,6 @@ import '../components/UserPreferences_provider.dart';
 import 'results_page.dart';
 import 'package:taste_twin/main.dart';
 
-
 class Content {
   final String text;
   final Color color;
@@ -100,7 +99,7 @@ class _MatchPage extends State<MatchPage> {
     Rest restaurantObject = Rest();
     restaurantObject.setRestaurant(tempRestaurantList[index]);
     restaurantObject.setTime(time);
-
+    restaurantObject.setName(tempRestaurantList[index].name);
     _matches.add(restaurantObject);
   }
 
@@ -110,7 +109,8 @@ class _MatchPage extends State<MatchPage> {
       final notifier = ref.watch(preferencesProvider.notifier);
       final preferences = ref.watch(preferencesProvider);
       final userPreferences = ref.watch(userPreferencesProvider);
-      final userPreferencesNotifier = ref.watch(userPreferencesProvider.notifier);
+      final userPreferencesNotifier =
+          ref.watch(userPreferencesProvider.notifier);
       return Scaffold(
           appBar: AppBar(
             title: Text(widget.title),
@@ -151,15 +151,14 @@ class _MatchPage extends State<MatchPage> {
                               ),
                               Row(
                                 mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Column(
-                                      mainAxisAlignment:
-                                        MainAxisAlignment.end,
+                                      mainAxisAlignment: MainAxisAlignment.end,
                                       crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           _swipeItems[index].content.name,
@@ -209,17 +208,18 @@ class _MatchPage extends State<MatchPage> {
                       },
                       onStackFinished: () {
                         userPreferencesNotifier.addMatch(_matches);
+                        print("Matches object: ${userPreferences.matches}");
                         _handleStackFinished();
                       },
                       itemChanged: (SwipeItem item, int index) {
                         DateTime now = DateTime.now();
 
-                          var startTime =
-                              "${now.hour}${now.minute}${now.second}";
-                          startTimeInt = int.parse(startTime);
+                        var startTime = "${now.hour}${now.minute}${now.second}";
+                        startTimeInt = int.parse(startTime);
 
                         print("item: ${item.content.text}, index: $index");
-                        print(notifier.getRemUsers());
+                        // print("Matches object: ${userPreferences.matches}");
+                        print("Current restaurant $_matches");
                       },
                       upSwipeAllowed: false,
                       fillSpace: true,

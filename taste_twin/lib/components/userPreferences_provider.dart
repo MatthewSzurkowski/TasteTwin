@@ -12,4 +12,12 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
   void addMatch(List<Rest> match) {
     state.matches.add(match);
   }
+
+  void clearMatches() {
+    state.matches = [];
+  }
+
+  List<List<Rest>> getMatches() {
+    return state.matches;
+  }
 }

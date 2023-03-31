@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
+import 'package:taste_twin/components/UserPreferences.dart';
+import 'package:taste_twin/components/UserPreferences_provider.dart';
 import 'package:taste_twin/models/restaurant.dart';
 import 'package:taste_twin/pages/results_page.dart';
 import '../components/MainDrawer.dart';
@@ -27,6 +29,11 @@ class _MyHomePageState extends State<MyHomePage> {
       builder: (context, ref, _) {
         final notifier = ref.watch(preferencesProvider.notifier);
         final preferences = ref.watch(preferencesProvider);
+        final userPreferencesNotifier =
+            ref.watch(userPreferencesProvider.notifier);
+        final userPreferences = ref.watch(userPreferencesProvider);
+
+        userPreferencesNotifier.clearMatches();
         return Scaffold(
             appBar: AppBar(
               title: Text(widget.title),

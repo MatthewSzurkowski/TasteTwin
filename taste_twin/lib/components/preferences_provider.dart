@@ -7,7 +7,7 @@ class PreferencesNotifier extends StateNotifier<Preferences> {
           searchDistance: 10,
           showFastFood: true,
           time: "1",
-          numUsers: 1,
+          numUsers: 2,
           remUsers: 1,
           selectedCuisines: [
             'Italian',

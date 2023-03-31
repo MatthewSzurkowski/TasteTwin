@@ -1,15 +1,17 @@
 import '../models/restaurant.dart';
 
 class Rest {
-  Restaurant? restList = null;
+  Restaurant? name = null;
   int time = 0;
+  int numUsers = 1;
+  String restaurantName = "";
 
   setRestaurant(Restaurant restaurant) {
-    restList = restaurant;
+    name = restaurant;
   }
 
-  getResaurant() {
-    return restList;
+  getRestaurant() {
+    return name;
   }
 
   int getTime() {
@@ -18,5 +20,25 @@ class Rest {
 
   setTime(int time) {
     this.time = time;
+  }
+
+  addTime(int time) {
+    this.time += time;
+  }
+
+  addUser() {
+    numUsers++;
+  }
+
+  int getUsers() {
+    return numUsers;
+  }
+
+  setName(String name) {
+    restaurantName = name;
+  }
+
+  String getName() {
+    return restaurantName;
   }
 }

@@ -1,11 +1,16 @@
 import 'package:taste_twin/components/rest.dart';
 
-class UserDetails {
+class UserPreferences {
   int numUsers = 2;
   List<List<Rest>> matches;
 
-  UserDetails({
+  UserPreferences({
     required this.numUsers,
     required this.matches,
   });
 }
+
+final userPreferences = UserPreferences(
+  numUsers: 2,
+  matches: [],
+);

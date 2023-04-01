@@ -45,6 +45,10 @@ class PreferencesNotifier extends StateNotifier<Preferences> {
     return state.time;
   }
 
+  void setRemUsers() {
+    state.remUsers = state.numUsers;
+  }
+
   int getRemUsers() {
     return state.remUsers;
   }

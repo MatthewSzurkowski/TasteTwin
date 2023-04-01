@@ -55,10 +55,12 @@ class _MatchPage extends State<MatchPage> {
   @override
   void initState() {
     DateTime now = DateTime.now();
-
-    var startTime = "${now.hour}${now.minute}${now.second}";
-    startTimeInt = int.parse(startTime);
-
+    var startTime = "${now.minute}${now.second}${now.millisecond}";
+    var minutes = int.parse(startTime.substring(0, 2));
+    var seconds = int.parse(startTime.substring(2, 4));
+    var milliseconds = int.parse(startTime.substring(4));
+    var startTimeInSeconds = minutes * 60 + seconds + (milliseconds / 1000);
+    var cond = 0;
     for (int i = 0; i < tempRestaurantList.length; i++) {
       _swipeItems.add(SwipeItem(
           content: Content(
@@ -72,15 +74,33 @@ class _MatchPage extends State<MatchPage> {
               color: Colors.white),
           likeAction: () {
             DateTime now = DateTime.now();
-
-            var endTime = "${now.hour}${now.minute}${now.second}";
-            int endTimeInt = int.parse(endTime);
-            int difference = endTimeInt - startTimeInt;
-
+            var endTime = "${now.minute}${now.second}${now.millisecond}";
+            var minutes = int.parse(endTime.substring(0, 2));
+            var seconds = int.parse(endTime.substring(2, 4));
+            var milliseconds = int.parse(endTime.substring(4));
+            var endTimeInSeconds =
+                minutes * 60 + seconds + (milliseconds / 1000);
+            double difference = endTimeInSeconds - startTimeInSeconds;
             _handleLikedRestaurant(difference, i);
+            cond = 0;
           },
-          nopeAction: () {},
-          onSlideUpdate: (SlideRegion? region) async {}));
+          nopeAction: () {
+            cond = 0;
+          },
+          onSlideUpdate: (SlideRegion? region) async {
+            if (cond == 0) {
+              print("NEW SLIDE");
+              DateTime startNow = DateTime.now();
+              startTime =
+                  "${startNow.minute}${startNow.second}${startNow.millisecond}";
+              minutes = int.parse(startTime.substring(0, 2));
+              seconds = int.parse(startTime.substring(2, 4));
+              milliseconds = int.parse(startTime.substring(4));
+              startTimeInSeconds =
+                  minutes * 60 + seconds + (milliseconds / 1000);
+              cond = 1;
+            }
+          }));
     }
 
     _matchEngine = MatchEngine(swipeItems: _swipeItems);
@@ -95,11 +115,8 @@ class _MatchPage extends State<MatchPage> {
     });
   }
 
-  void _handleLikedRestaurant(int time, int index) {
-    Rest restaurantObject = Rest();
-    restaurantObject.setRestaurant(tempRestaurantList[index]);
-    restaurantObject.setTime(time);
-    restaurantObject.setName(tempRestaurantList[index].name);
+  void _handleLikedRestaurant(double time, int index) {
+    Rest restaurantObject = Rest(rest: tempRestaurantList[index], time: time);
     _matches.add(restaurantObject);
   }
 
@@ -213,13 +230,20 @@ class _MatchPage extends State<MatchPage> {
                       },
                       itemChanged: (SwipeItem item, int index) {
                         DateTime now = DateTime.now();
-
-                        var startTime = "${now.hour}${now.minute}${now.second}";
-                        startTimeInt = int.parse(startTime);
-
+                        var startTime =
+                            "${now.minute}${now.second}${now.millisecond}";
+                        var minutes = int.parse(startTime.substring(0, 2));
+                        var seconds = int.parse(startTime.substring(2, 4));
+                        var milliseconds = int.parse(startTime.substring(4));
+                        var startTimeInSeconds =
+                            minutes * 60 + seconds + (milliseconds / 1000);
                         print("item: ${item.content.text}, index: $index");
                         // print("Matches object: ${userPreferences.matches}");
-                        print("Current restaurant $_matches");
+                        //print("List of Restaurants: $_matches");
+                        for (var i = 0; i < _matches.length; i++) {
+                          print(
+                              "List of Restaurants ${i + 1}: ${_matches[i].rest!.name}, ${_matches[i].time}");
+                        }
                       },
                       upSwipeAllowed: false,
                       fillSpace: true,

@@ -1,44 +1,29 @@
 import '../models/restaurant.dart';
 
 class Rest {
-  Restaurant? name = null;
-  int time = 0;
-  int numUsers = 1;
-  String restaurantName = "";
+  Restaurant? rest;
+  double time;
 
-  setRestaurant(Restaurant restaurant) {
-    name = restaurant;
-  }
+  Rest({
+    required this.rest,
+    required this.time,
+  });
 
-  getRestaurant() {
-    return name;
-  }
-
-  int getTime() {
+  double getTime() {
     return time;
   }
 
-  setTime(int time) {
-    this.time = time;
+  void setTime(double newTime) {
+    time = newTime;
   }
 
-  addTime(int time) {
-    this.time += time;
+  void setRestaurant(Restaurant newRest) {
+    rest = newRest;
   }
 
-  addUser() {
-    numUsers++;
-  }
-
-  int getUsers() {
-    return numUsers;
-  }
-
-  setName(String name) {
-    restaurantName = name;
-  }
-
-  String getName() {
-    return restaurantName;
+  Restaurant? getRestaurant() {
+    return rest;
   }
 }
+
+final restObj = Rest(rest: null, time: 0);

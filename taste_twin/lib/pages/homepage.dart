@@ -32,6 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
         final userPreferencesNotifier =
             ref.watch(userPreferencesProvider.notifier);
         final userPreferences = ref.watch(userPreferencesProvider);
+        notifier.setRemUsers();
 
         userPreferencesNotifier.clearMatches();
         return Scaffold(

@@ -43,7 +43,6 @@ class MatchPage extends StatefulWidget {
   // always marked "final".
 
   final String title;
-
   @override
   State<MatchPage> createState() => _MatchPage();
 }
@@ -68,7 +67,6 @@ class _MatchPage extends State<MatchPage> {
     DatabaseReference ref = FirebaseDatabase.instance.ref();
     DatabaseEvent event = await ref.once();
     restaurants = parseRestaurants(event.snapshot.value.toString());
-    // restaurants.forEach((Restaurant res) => print(res.name));
   }
 
   @override
@@ -76,45 +74,44 @@ class _MatchPage extends State<MatchPage> {
     super.initState();
     readDB();
     _matchEngine = MatchEngine(swipeItems: _swipeItems);
-    Future.delayed(const Duration(seconds: 2), () {
-      // ignore: avoid_print
-      print("Restaurants length: ${restaurants.length}");
-
-      for (int i = 0; i < restaurants.length; i++) {
-        print(restaurants[i].pictureURL);
-        _swipeItems.add(SwipeItem(
-            content: Content(
-                text: restaurants[i].name,
-                name: restaurants[i].name,
-                location: restaurants[i].location,
-                price: restaurants[i].price,
-                type: restaurants[i].type,
-                description: restaurants[i].description,
-                pictureUrl: restaurants[i].pictureURL,
-                color: Colors.white),
-            likeAction: () {
-              _handleLikedRestaurant(i);
-              // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              //   content: Text("Liked ${restaurants[i].name}"),
-              //   duration: const Duration(milliseconds: 500),
-              // ));
-            },
-            nopeAction: () {
-              // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              //   content: Text("Nope ${restaurants[i].name}"),
-              //   duration: const Duration(milliseconds: 500),
-              // ));
-            },
-            superlikeAction: () {
-              // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              //   content: Text("Superliked ${restaurants[i].name}"),
-              //   duration: const Duration(milliseconds: 500),
-              // ));
-            },
-            onSlideUpdate: (SlideRegion? region) async {
-              print("Region $region");
-            }));
-      }
+    Future.delayed(const Duration(seconds: 1), () {
+      setState(() {
+        for (int i = 0; i < restaurants.length; i++) {
+          // print(restaurants[i].pictureURL);
+          _swipeItems.add(SwipeItem(
+              content: Content(
+                  text: restaurants[i].name,
+                  name: restaurants[i].name,
+                  location: restaurants[i].location,
+                  price: restaurants[i].price,
+                  type: restaurants[i].type,
+                  description: restaurants[i].description,
+                  pictureUrl: restaurants[i].pictureURL,
+                  color: Colors.white),
+              likeAction: () {
+                _handleLikedRestaurant(i);
+                // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                //   content: Text("Liked ${restaurants[i].name}"),
+                //   duration: const Duration(milliseconds: 500),
+                // ));
+              },
+              nopeAction: () {
+                // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                //   content: Text("Nope ${restaurants[i].name}"),
+                //   duration: const Duration(milliseconds: 500),
+                // ));
+              },
+              superlikeAction: () {
+                // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                //   content: Text("Superliked ${restaurants[i].name}"),
+                //   duration: const Duration(milliseconds: 500),
+                // ));
+              },
+              onSlideUpdate: (SlideRegion? region) async {
+                print("Region $region");
+              }));
+        }
+      });
     });
   }
 

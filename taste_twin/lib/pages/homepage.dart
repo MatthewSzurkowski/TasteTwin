@@ -9,9 +9,6 @@ import 'package:taste_twin/pages/results_page.dart';
 import '../components/MainDrawer.dart';
 import 'filterspage.dart';
 import 'matchpage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -32,59 +29,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  void parseJSON(String jsonString) {
-    // Testing method to parse the JSON string given from the database and print out data
-    List<dynamic> jsonList = json.decode(jsonString);
-
-    for (dynamic json in jsonList) {
-      int priceLevel = json['price_level'];
-      String name = json['name'];
-      String? description = json['description'];
-      bool isFastFood = json['isFastFood'];
-      String location = json['location'];
-      String photoUrl = json['photo_url'];
-      String type = json['type'];
-      double distanceGuelph = json['distanceGuelph'];
-
-      print('Price Level: $priceLevel');
-      print('Name: $name');
-      print('Description: $description');
-      print('Is Fast Food: $isFastFood');
-      print('Location: $location');
-      print('Photo URL: $photoUrl');
-      print('Type: $type');
-      print('Distance to Guelph: $distanceGuelph km');
-    }
-  }
-
-  List<Restaurant> parseRestaurants(String responseBody) {
-    // This method parses the JSON response from the database and creates
-    // restaurant objects for each JSON object and returns them in a list.
-    final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
-
-    return parsed.map<Restaurant>((json) => Restaurant.fromJson(json)).toList();
-  }
-
-  void readDB() async {
-    FirebaseDatabase database = FirebaseDatabase.instance;
-    DatabaseReference ref = FirebaseDatabase.instance.ref();
-    DatabaseEvent event = await ref.once();
-
-    String dataStr = event.snapshot.value.toString();
-
-    // parseJSON(dataStr);
-    List<Restaurant> resList = parseRestaurants(dataStr);
-    resList.forEach((Restaurant res) => print(res.name));
-  }
-
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
         appBar: AppBar(
           // Here we take the value from the MyHomePage object that was created by
@@ -157,16 +103,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     );
                   },
                   child: const Text('Search Filters'),
-                ),
-                TextButton(
-                  style: ButtonStyle(
-                    foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.blue),
-                  ),
-                  onPressed: () {
-                    readDB();
-                  },
-                  child: const Text('Test'),
                 ),
               ]),
             ],

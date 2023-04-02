@@ -264,7 +264,7 @@ class _MatchPage extends State<MatchPage> {
                         fillColor: Colors.white,
                         padding: const EdgeInsets.all(15.0),
                         shape: const CircleBorder(),
-                        child: const Icon(CupertinoIcons.clear_circled,
+                        child: const Icon(CupertinoIcons.clear,
                             size: 40, color: Color.fromARGB(255, 132, 18, 18)),
                       ),
                       RawMaterialButton(
@@ -275,7 +275,7 @@ class _MatchPage extends State<MatchPage> {
                         fillColor: Colors.white,
                         padding: const EdgeInsets.all(15.0),
                         shape: const CircleBorder(),
-                        child: const Icon(CupertinoIcons.star_fill,
+                        child: const Icon(CupertinoIcons.star,
                             size: 40, color: Colors.blue),
                       ),
                       RawMaterialButton(

@@ -79,7 +79,7 @@ class _NextPersonPage extends State<NextPersonPage> {
                   fillColor: Colors.white,
                   padding: const EdgeInsets.all(15.0),
                   shape: const CircleBorder(),
-                  child: const Icon(CupertinoIcons.clear_circled,
+                  child: const Icon(CupertinoIcons.clear,
                       size: 40, color: Color.fromARGB(255, 44, 44, 44)),
                 ),
                 RawMaterialButton(

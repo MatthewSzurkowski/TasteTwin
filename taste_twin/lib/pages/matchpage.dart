@@ -19,21 +19,24 @@ class Content {
   final String text;
   final Color color;
   final String name;
-  final int location;
+  final double location;
   final String price;
   final String type;
   final String description;
   final String pictureUrl;
+  final List<String> tags;
 
-  Content(
-      {required this.text,
-      required this.color,
-      required this.name,
-      required this.location,
-      required this.price,
-      required this.type,
-      required this.description,
-      required this.pictureUrl});
+  Content({
+    required this.text,
+    required this.color,
+    required this.name,
+    required this.location,
+    required this.price,
+    required this.type,
+    required this.description,
+    required this.pictureUrl,
+    required this.tags,
+  });
 }
 
 class MatchPage extends StatefulWidget {
@@ -61,17 +64,20 @@ class _MatchPage extends State<MatchPage> {
     var milliseconds = int.parse(startTime.substring(4));
     var startTimeInSeconds = minutes * 60 + seconds + (milliseconds / 1000);
     var cond = 0;
+
     for (int i = 0; i < tempRestaurantList.length; i++) {
       _swipeItems.add(SwipeItem(
           content: Content(
-              text: tempRestaurantList[i].name,
-              name: tempRestaurantList[i].name,
-              location: tempRestaurantList[i].location,
-              price: tempRestaurantList[i].price,
-              type: tempRestaurantList[i].type,
-              description: tempRestaurantList[i].description,
-              pictureUrl: tempRestaurantList[i].pictureURL,
-              color: Colors.white),
+            text: tempRestaurantList[i].name,
+            name: tempRestaurantList[i].name,
+            location: tempRestaurantList[i].location,
+            price: tempRestaurantList[i].price,
+            type: tempRestaurantList[i].type,
+            description: tempRestaurantList[i].description,
+            pictureUrl: tempRestaurantList[i].pictureURL,
+            color: Colors.white,
+            tags: tempRestaurantList[i].tags,
+          ),
           likeAction: () {
             DateTime now = DateTime.now();
             var endTime = "${now.minute}${now.second}${now.millisecond}";
@@ -93,7 +99,6 @@ class _MatchPage extends State<MatchPage> {
           },
           onSlideUpdate: (SlideRegion? region) async {
             if (cond == 0) {
-              print("NEW SLIDE");
               DateTime startNow = DateTime.now();
               startTime =
                   "${startNow.minute}${startNow.second}${startNow.millisecond}";
@@ -132,6 +137,63 @@ class _MatchPage extends State<MatchPage> {
       final userPreferences = ref.watch(userPreferencesProvider);
       final userPreferencesNotifier =
           ref.watch(userPreferencesProvider.notifier);
+
+      bool allowFastFood = notifier.getFastFood();
+
+      //Get the restaurants that the user has unliked
+      List<String> options = [
+        "Italian",
+        "Chinese",
+        "Mexican",
+        "Indian",
+        "French",
+        "Japanese",
+        "American",
+      ];
+
+      List<dynamic> values = notifier.getSelectedCuisines();
+      List<String> cuisinesNotChosen = [];
+
+      //Get the list of unselected cuisines
+      for (int i = 0; i < options.length; i++) {
+        if (!values.contains(options[i])) {
+          cuisinesNotChosen.add(options[i]);
+        }
+      }
+
+      double distance = notifier.getSearchDistanceValue();
+
+      for (int i = 0; i < _swipeItems.length; i++) {
+        //If the user doesn't want fast food, remove fast food restaurants
+        if (!allowFastFood) {
+          if (_swipeItems[i].content.tags.contains("Fast Food")) {
+            _swipeItems.removeAt(i);
+          }
+        }
+
+        bool skipped = false;
+
+        //If they don't want a cuisine, remove it
+        for (int j = 0; j < cuisinesNotChosen.length; j++) {
+          if (_swipeItems[i].content.tags.contains(cuisinesNotChosen[j])) {
+            _swipeItems.removeAt(i);
+            i -= 1;
+            skipped = true;
+            break;
+          }
+        }
+
+        if (skipped) {
+          continue;
+        }
+
+        //Remove restaurants that are too far away
+        if (_swipeItems[i].content.location > distance) {
+          _swipeItems.removeAt(i);
+          i -= 1;
+        }
+      }
+
       return Scaffold(
           appBar: AppBar(
             title: Text(widget.title),

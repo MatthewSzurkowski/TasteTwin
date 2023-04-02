@@ -74,4 +74,8 @@ class PreferencesNotifier extends StateNotifier<Preferences> {
   int getNumUsers() {
     return state.numUsers;
   }
+
+  double getSearchDistanceValue() {
+    return state.searchDistance;
+  }
 }

@@ -87,6 +87,10 @@ class _MatchPage extends State<MatchPage> {
           nopeAction: () {
             cond = 0;
           },
+          superlikeAction: () {
+            _handleLikedRestaurant(0, i);
+            cond = 0;
+          },
           onSlideUpdate: (SlideRegion? region) async {
             if (cond == 0) {
               print("NEW SLIDE");
@@ -245,7 +249,7 @@ class _MatchPage extends State<MatchPage> {
                               "List of Restaurants ${i + 1}: ${_matches[i].rest!.name}, ${_matches[i].time}");
                         }
                       },
-                      upSwipeAllowed: false,
+                      upSwipeAllowed: true,
                       fillSpace: true,
                     ),
                   ),
@@ -262,6 +266,17 @@ class _MatchPage extends State<MatchPage> {
                         shape: const CircleBorder(),
                         child: const Icon(CupertinoIcons.clear_circled,
                             size: 40, color: Color.fromARGB(255, 132, 18, 18)),
+                      ),
+                      RawMaterialButton(
+                        onPressed: () {
+                          _matchEngine.currentItem?.superLike();
+                        },
+                        elevation: 2.0,
+                        fillColor: Colors.white,
+                        padding: const EdgeInsets.all(15.0),
+                        shape: const CircleBorder(),
+                        child: const Icon(CupertinoIcons.star_fill,
+                            size: 40, color: Colors.blue),
                       ),
                       RawMaterialButton(
                         onPressed: () {

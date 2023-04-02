@@ -8,7 +8,7 @@ import '/components/preferences_provider.dart';
 import '../components/MainDrawer.dart';
 
 const List<String> list = <String>["1", "2", "3", "4", "5"];
-int numUsersVal = 1;
+int numUsersVal = 2;
 
 class FiltersPage extends StatefulWidget {
   const FiltersPage(

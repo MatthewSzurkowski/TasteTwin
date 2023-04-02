@@ -29,7 +29,7 @@ class Restaurant {
       menu: null, // Map<String, String>.from(json['menu']),
       description: json['description'],
       pictureURL: json['photo_url'],
-      price: json['price_level'].toString(),
+      price: json['price_level'],
       isFastFood: json['isFastFood'],
     );
   }

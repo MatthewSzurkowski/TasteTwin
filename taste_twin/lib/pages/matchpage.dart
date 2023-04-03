@@ -1,24 +1,30 @@
+import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:swipe_cards/draggable_card.dart';
-// import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:swipe_cards/swipe_cards.dart';
+import 'package:taste_twin/components/preferences_provider.dart';
+import 'package:taste_twin/components/rest.dart';
 import 'package:taste_twin/pages/nextPerson.dart';
 import 'results_page.dart';
 import 'package:taste_twin/models/restaurant.dart';
 import 'dart:convert';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:taste_twin/main.dart';
 
 class Content {
   final String text;
   final Color color;
   final String name;
-  final double location;
+  final String location;
   final String? price;
   final String? type;
   final String? description;
   final String? pictureUrl;
+  final double distanceGuelph;
   bool isCardFlipped;
+  final List<String> tags;
 
   void setIsCardFlipped(bool value) {
     isCardFlipped = value;
@@ -28,102 +34,174 @@ class Content {
     return isCardFlipped;
   }
 
-  Content(
-      {required this.text,
-      required this.color,
-      required this.name,
-      required this.location,
-      required this.price,
-      required this.type,
-      required this.description,
-      required this.pictureUrl,
-      required this.isCardFlipped});
+  Content({
+    required this.text,
+    required this.color,
+    required this.name,
+    required this.location,
+    required this.price,
+    required this.type,
+    required this.description,
+    required this.pictureUrl,
+    required this.isCardFlipped,
+    required this.distanceGuelph,
+    required this.tags,
+  });
 }
 
 class MatchPage extends StatefulWidget {
   const MatchPage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
+
   @override
   State<MatchPage> createState() => _MatchPage();
 }
 
 class _MatchPage extends State<MatchPage> {
-  List<SwipeItem> _swipeItems = <SwipeItem>[];
-  List<Restaurant> _matches = <Restaurant>[];
+  final List<SwipeItem> _swipeItems = <SwipeItem>[];
+  final List<Rest> _matches = <Rest>[];
   late MatchEngine _matchEngine;
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   List<Restaurant> restaurants = <Restaurant>[];
+  int startTimeInt = 0;
+  int interations = 0;
 
   List<Restaurant> parseRestaurants(String responseBody) {
     // This method parses the JSON response from the database and creates
     // restaurant objects for each JSON object and returns them in a list.
     final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
-
     return parsed.map<Restaurant>((json) => Restaurant.fromJson(json)).toList();
   }
 
   void readDB() async {
+    // ignore: unused_local_variable
     FirebaseDatabase database = FirebaseDatabase.instance;
     DatabaseReference ref = FirebaseDatabase.instance.ref();
     DatabaseEvent event = await ref.once();
     restaurants = parseRestaurants(event.snapshot.value.toString());
   }
 
+  Future<List<dynamic>> readDB2() async {
+    FirebaseDatabase database = FirebaseDatabase.instance;
+    DatabaseReference ref = FirebaseDatabase.instance.ref();
+    DatabaseEvent event = await ref.once();
+    restaurants = parseRestaurants(event.snapshot.value.toString());
+    return restaurants;
+  }
+
+  var beginningTimeInSeconds = 0.0;
+  int globalRemUsers = 1;
+
   @override
   void initState() {
     super.initState();
-    readDB();
+    //readDB();
+    // List<Restaurant> restaurants = readDB();
     _matchEngine = MatchEngine(swipeItems: _swipeItems);
     Future.delayed(const Duration(seconds: 1), () {
+      DateTime beginningTime = DateTime.now();
+      var startTime =
+          "${beginningTime.minute}${beginningTime.second}${beginningTime.millisecond}";
+      var minutes = int.parse(startTime.substring(0, 2));
+      var seconds = int.parse(startTime.substring(2, 4));
+      var milliseconds = int.parse(startTime.substring(4));
+      var startTimeInSeconds = minutes * 60 + seconds + (milliseconds / 1000);
+      beginningTimeInSeconds = startTimeInSeconds;
+      var cond = 0;
       setState(() {
         for (int i = 0; i < restaurants.length; i++) {
-          // print(restaurants[i].pictureURL);
           _swipeItems.add(SwipeItem(
               content: Content(
-                  isCardFlipped: false,
-                  text: restaurants[i].name,
-                  name: restaurants[i].name,
-                  location: restaurants[i].location,
-                  price: restaurants[i].price,
-                  type: restaurants[i].type,
-                  description: restaurants[i].description,
-                  pictureUrl: restaurants[i].pictureURL,
-                  color: Colors.white),
+                isCardFlipped: false,
+                text: restaurants[i].name,
+                name: restaurants[i].name,
+                location: restaurants[i].location,
+                price: restaurants[i].price,
+                type: restaurants[i].type,
+                description: restaurants[i].description,
+                pictureUrl: restaurants[i].pictureURL,
+                distanceGuelph: restaurants[i].distanceGuelph,
+                color: Colors.white,
+                tags: restaurants[i].tags,
+              ),
               likeAction: () {
-                _handleLikedRestaurant(i);
-                // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                //   content: Text("Liked ${restaurants[i].name}"),
-                //   duration: const Duration(milliseconds: 500),
-                // ));
+                DateTime now = DateTime.now();
+                var endTime = "${now.minute}${now.second}${now.millisecond}";
+                var minutes = int.parse(endTime.substring(0, 2));
+                var seconds = int.parse(endTime.substring(2, 4));
+                var milliseconds = int.parse(endTime.substring(4));
+                var endTimeInSeconds =
+                    minutes * 60 + seconds + (milliseconds / 1000);
+                double difference = endTimeInSeconds - startTimeInSeconds;
+                _handleLikedRestaurant(difference, i);
+                cond = 0;
               },
               nopeAction: () {
-                // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                //   content: Text("Nope ${restaurants[i].name}"),
-                //   duration: const Duration(milliseconds: 500),
-                // ));
+                cond = 0;
               },
               superlikeAction: () {
-                // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                //   content: Text("Superliked ${restaurants[i].name}"),
-                //   duration: const Duration(milliseconds: 500),
-                // ));
+                _handleLikedRestaurant(0, i);
+                cond = 0;
               },
               onSlideUpdate: (SlideRegion? region) async {
-                print("Region $region");
+                if (cond == 0) {
+                  DateTime startNow = DateTime.now();
+                  startTime =
+                      "${startNow.minute}${startNow.second}${startNow.millisecond}";
+                  minutes = int.parse(startTime.substring(0, 2));
+                  seconds = int.parse(startTime.substring(2, 4));
+                  milliseconds = int.parse(startTime.substring(4));
+                  startTimeInSeconds =
+                      minutes * 60 + seconds + (milliseconds / 1000);
+                  cond = 1;
+                }
               }));
         }
       });
     });
+  }
+
+  late PreferencesNotifier globalNotifier;
+  // ignore: unused_field
+  Timer? _timer;
+
+  void _startTimer() {
+    final Duration timerDuration = Duration(seconds: globalNotifier.getTime());
+    _timer = Timer(timerDuration, _navigateToNextPage);
+  }
+
+  void _navigateToNextPage() {
+    //print(globalNotifier.getRemUsers());
+    if (mounted) {
+      if (globalNotifier.getRemUsers() > 1) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Times up! Switch to the next person"),
+          duration: Duration(milliseconds: 5000),
+        ));
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => NextPersonPage(
+              title: 'Taste Twin',
+              matches: _matches,
+            ),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Times up! Showing Results"),
+          duration: Duration(milliseconds: 5000),
+        ));
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => ResultsPage(
+              title: 'Results',
+              matches: _matches,
+            ),
+          ),
+        );
+      }
+    }
   }
 
   bool _showSwipeCards = true;
@@ -134,8 +212,9 @@ class _MatchPage extends State<MatchPage> {
     });
   }
 
-  void _handleLikedRestaurant(int index) {
-    _matches.add(restaurants[index]);
+  void _handleLikedRestaurant(double time, int index) {
+    Rest restaurantObject = Rest(rest: restaurants[index], time: time);
+    _matches.add(restaurantObject);
   }
 
   // Toggle if card is flipped or not.
@@ -147,92 +226,218 @@ class _MatchPage extends State<MatchPage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-        appBar: AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: Text(widget.title),
-        ),
-        body: _showSwipeCards
-            ? Column(children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.75,
-                  width: 400,
-                  child: SwipeCards(
-                    matchEngine: _matchEngine,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Container(
-                        decoration: BoxDecoration(
-                            color: _swipeItems[index].content.color,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(10))),
-                        margin: const EdgeInsets.all(8),
-                        alignment: Alignment.center,
-                        child: card(_swipeItems[index]),
-                      );
-                    },
-                    onStackFinished: () {
-                      _handleStackFinished();
-                    },
-                    itemChanged: (SwipeItem item, int index) {
-                      print("item: ${item.content.text}, index: $index");
-                    },
-                    upSwipeAllowed: true,
-                    fillSpace: true,
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    RawMaterialButton(
-                      onPressed: () {
-                        _matchEngine.currentItem?.nope();
-                      },
-                      elevation: 2.0,
-                      fillColor: Colors.white,
-                      padding: const EdgeInsets.all(15.0),
-                      shape: const CircleBorder(),
-                      child: const Icon(CupertinoIcons.clear_circled,
-                          size: 40, color: Color.fromARGB(255, 132, 18, 18)),
-                    ),
-                    RawMaterialButton(
-                      onPressed: () {
-                        _matchEngine.currentItem?.like();
-                      },
-                      elevation: 2.0,
-                      fillColor: Colors.white,
-                      padding: const EdgeInsets.all(15.0),
-                      shape: const CircleBorder(),
-                      child: const Icon(CupertinoIcons.heart,
-                          size: 40, color: Color.fromARGB(255, 15, 128, 15)),
-                    ),
-                  ],
-                )
-              ])
-            : Center(child: Builder(
-                //if the current user = numUsers.length(), go to results
-                // ELSE: go to next person page
-                builder: (context) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => NextPersonPage(
-                          title: 'Taste Twin',
-                          matches: _matches,
-                        ),
-                      ),
-                    );
-                  });
-                  return Container();
-                },
-              )));
+    return Consumer(builder: (context, ref, _) {
+      final notifier = ref.watch(preferencesProvider.notifier);
+      globalNotifier = notifier;
+      _startTimer();
+      final userPreferences = ref.watch(userPreferencesProvider);
+      final userPreferencesNotifier =
+          ref.watch(userPreferencesProvider.notifier);
+
+      bool allowFastFood = notifier.getFastFood();
+
+      //Get the restaurants that the user has unliked
+      List<String> options = [
+        "Italian",
+        "Chinese",
+        "Mexican",
+        "Indian",
+        "Canadian",
+        "Greek",
+        "American",
+      ];
+
+      List<dynamic> values = notifier.getSelectedCuisines();
+      List<String> cuisinesNotChosen = [];
+
+      //Get the list of unselected cuisines
+      for (int i = 0; i < options.length; i++) {
+        if (!values.contains(options[i])) {
+          cuisinesNotChosen.add(options[i]);
+        }
+      }
+
+      double distance = notifier.getSearchDistanceValue();
+
+      for (int i = 0; i < _swipeItems.length; i++) {
+        if (_swipeItems.isEmpty) {
+          globalRemUsers = 0;
+          _showSwipeCards = false;
+        }
+        //If the user doesn't want fast food, remove fast food restaurants
+        bool skipped = false;
+        //print(_swipeItems[i].content.tags.toString());
+
+        if (!allowFastFood) {
+          if (_swipeItems[i].content.tags.contains("Fast Food")) {
+            _swipeItems.removeAt(i);
+            i -= 1;
+            skipped = true;
+            //break;
+          }
+        }
+
+        if (skipped) {
+          continue;
+        }
+
+        //If they don't want a cuisine, remove it
+        for (int j = 0; j < cuisinesNotChosen.length; j++) {
+          if (_swipeItems[i].content.tags.contains(cuisinesNotChosen[j])) {
+            _swipeItems.removeAt(i);
+            i -= 1;
+            skipped = true;
+            break;
+          }
+        }
+        if (skipped) {
+          if (_swipeItems.isEmpty) {
+            globalRemUsers = 0;
+            _showSwipeCards = false;
+          }
+          continue;
+        }
+        //Remove restaurants that are too far away
+        if (_swipeItems[i].content.distanceGuelph > distance) {
+          _swipeItems.removeAt(i);
+          i -= 1;
+        }
+        if (_swipeItems.isEmpty) {
+          globalRemUsers = 0;
+          _showSwipeCards = false;
+        }
+      }
+
+      return Scaffold(
+          appBar: AppBar(
+            title: Text(widget.title),
+          ),
+          body: _showSwipeCards
+              ? Column(children: [
+                  Expanded(
+                      child: FutureBuilder(
+                          future: readDB2(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                  child: Text('Error: ${snapshot.error}'));
+                            } else {
+                              return Column(children: [
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.75,
+                                  width: 400,
+                                  child: SwipeCards(
+                                    matchEngine: _matchEngine,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                          color:
+                                              _swipeItems[index].content.color,
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: card(_swipeItems[index]),
+                                      );
+                                    },
+                                    onStackFinished: () {
+                                      userPreferencesNotifier
+                                          .addMatch(_matches);
+                                      print(
+                                          "Matches object: ${userPreferences.matches}");
+                                      _handleStackFinished();
+                                    },
+                                    itemChanged: (SwipeItem item, int index) {
+                                      // for (var i = 0; i < _matches.length; i++) {
+                                      //   print(
+                                      //       "List of Restaurants ${i + 1}: ${_matches[i].rest!.name}, ${_matches[i].time}");
+                                      // }
+                                    },
+                                    upSwipeAllowed: true,
+                                    fillSpace: true,
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    RawMaterialButton(
+                                      onPressed: () {
+                                        _matchEngine.currentItem?.nope();
+                                      },
+                                      elevation: 2.0,
+                                      fillColor: Colors.white,
+                                      padding: const EdgeInsets.all(15.0),
+                                      shape: const CircleBorder(),
+                                      child: const Icon(CupertinoIcons.clear,
+                                          size: 40,
+                                          color:
+                                              Color.fromARGB(255, 132, 18, 18)),
+                                    ),
+                                    RawMaterialButton(
+                                      onPressed: () {
+                                        _matchEngine.currentItem?.superLike();
+                                      },
+                                      elevation: 2.0,
+                                      fillColor: Colors.white,
+                                      padding: const EdgeInsets.all(15.0),
+                                      shape: const CircleBorder(),
+                                      child: const Icon(CupertinoIcons.star,
+                                          size: 40, color: Colors.blue),
+                                    ),
+                                    RawMaterialButton(
+                                      onPressed: () {
+                                        _matchEngine.currentItem?.like();
+                                      },
+                                      elevation: 2.0,
+                                      fillColor: Colors.white,
+                                      padding: const EdgeInsets.all(15.0),
+                                      shape: const CircleBorder(),
+                                      child: const Icon(CupertinoIcons.heart,
+                                          size: 40,
+                                          color:
+                                              Color.fromARGB(255, 15, 128, 15)),
+                                    ),
+                                  ],
+                                )
+                              ]);
+                            }
+                          }))
+                ])
+              : Center(child: Builder(
+                  builder: (context) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if ((notifier.getRemUsers() > 1) && globalRemUsers > 0) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => NextPersonPage(
+                              title: 'Taste Twin',
+                              matches: _matches,
+                            ),
+                          ),
+                        );
+                      } else {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => ResultsPage(
+                              title: 'Results',
+                              matches: _matches,
+                            ),
+                          ),
+                        );
+                      }
+                    });
+                    return Container();
+                  },
+                )));
+    });
   }
 
   // Builds the card displaying a restauarant.
@@ -243,7 +448,6 @@ class _MatchPage extends State<MatchPage> {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
                     image: DecorationImage(
                       image: NetworkImage(item.content.pictureUrl),
                       fit: BoxFit.fitHeight,
@@ -252,7 +456,6 @@ class _MatchPage extends State<MatchPage> {
                 ),
                 Container(
                   decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
                     gradient: LinearGradient(
                       begin: Alignment(0, 0),
                       end: Alignment(0, 1),
@@ -282,7 +485,7 @@ class _MatchPage extends State<MatchPage> {
                               style: const TextStyle(
                                   fontSize: 20,
                                   color: Color.fromARGB(255, 255, 255, 255))),
-                          Text("${item.content.location} kms away",
+                          Text("${item.content.distanceGuelph} kms away",
                               style: const TextStyle(
                                   fontSize: 20,
                                   color: Color.fromARGB(255, 255, 255, 255))),
@@ -309,11 +512,8 @@ class _MatchPage extends State<MatchPage> {
                 )
               ],
             )
-          : Container(
+          : SizedBox(
               width: 400,
-              decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                  border: Border.all(color: Colors.blue, width: 2)),
               child: Column(
                 children: [
                   Expanded(
@@ -332,6 +532,10 @@ class _MatchPage extends State<MatchPage> {
                           ),
                           Text(
                             "${item.content.description}",
+                            style: const TextStyle(
+                              fontSize: 16,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 8),
                           const Text(
@@ -343,7 +547,11 @@ class _MatchPage extends State<MatchPage> {
                             ),
                           ),
                           Text(
-                            "${item.content.location} km away.",
+                            "${item.content.location}\n${item.content.distanceGuelph} km away.",
+                            style: const TextStyle(
+                              fontSize: 16,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
                         ],
                       ),

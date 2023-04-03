@@ -42,6 +42,7 @@ dependencies:
   tinder_swipecard: ^0.3.0
   swipe_cards: ^2.0.0+1
   url_launcher: ^6.1.10
+  flutter_riverpod: ^2.3.2
   firebase_core: ^2.7.1
   cloud_firestore: ^4.4.4
   firebase_database: ^10.0.15

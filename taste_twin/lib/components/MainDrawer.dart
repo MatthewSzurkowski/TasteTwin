@@ -7,7 +7,8 @@ import '../pages/homepage.dart';
 import 'package:flutter/cupertino.dart';
 
 class MainDrawer extends StatelessWidget {
-  const MainDrawer({super.key});
+  const MainDrawer({super.key, required this.currentPage});
+  final String currentPage;
 
   @override
   Widget build(BuildContext context) {
@@ -37,15 +38,16 @@ class MainDrawer extends StatelessWidget {
             ),
             title: const Text('Homepage'),
             onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        const MyHomePage(title: 'Taste Twin')),
-              );
+              if (currentPage == "Homepage") {
+                Navigator.pop(context);
+              } else {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          const MyHomePage(title: 'Taste Twin')),
+                );
+              }
             },
           ),
           ListTile(
@@ -56,14 +58,19 @@ class MainDrawer extends StatelessWidget {
             ),
             title: const Text('Search Filters'),
             onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const FiltersPage(title: 'Filters')),
-              );
+              if (currentPage == "Filters") {
+                Navigator.pop(context);
+              } else {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const FiltersPage(
+                            title: 'Filters',
+                            preferences: 'test',
+                            isDrawerVisible: true,
+                          )),
+                );
+              }
             },
           ),
           ListTile(
@@ -74,15 +81,16 @@ class MainDrawer extends StatelessWidget {
             ),
             title: const Text('Settings'),
             onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        const SettingsPage(title: 'Settings')),
-              );
+              if (currentPage == "Settings") {
+                Navigator.pop(context);
+              } else {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          const SettingsPage(title: 'Settings')),
+                );
+              }
             },
           ),
           ListTile(
@@ -93,14 +101,15 @@ class MainDrawer extends StatelessWidget {
             ),
             title: const Text('About'),
             onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const AboutPage(title: 'About')),
-              );
+              if (currentPage == "About") {
+                Navigator.pop(context);
+              } else {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AboutPage(title: 'About')),
+                );
+              }
             },
           ),
         ],

@@ -79,18 +79,31 @@ class ResultsPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Title
-              Container(
-                margin: const EdgeInsets.all(20),
-                child: const Text(
-                  "Finished! Your matches are...",
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+              if (finalSet.isEmpty)
+                Container(
+                  margin: const EdgeInsets.all(20),
+                  child: const Text(
+                    "No matches found. Try again!",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+              else
+                Container(
+                  margin: const EdgeInsets.all(20),
+                  child: const Text(
+                    "Finished! Your matches are...",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
+              // Title
 
               // Scrollable list of Results
               Expanded(

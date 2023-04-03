@@ -39,9 +39,9 @@ class _NextPersonPage extends State<NextPersonPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    const Text("Switch to next person!",
+                    const Text("Switch to the Next Person!",
                         style: TextStyle(
-                            fontSize: 35, color: Color.fromARGB(255, 0, 0, 0))),
+                            fontSize: 30, color: Color.fromARGB(255, 0, 0, 0))),
                     ElevatedButton(
                       onPressed: () {
                         notifier.decrementUsers();
@@ -56,7 +56,7 @@ class _NextPersonPage extends State<NextPersonPage> {
                       },
                       child: const Text("Next",
                           style: TextStyle(
-                              fontSize: 40,
+                              fontSize: 35,
                               color: Color.fromARGB(255, 255, 255, 255))),
                     )
                   ],
@@ -71,6 +71,15 @@ class _NextPersonPage extends State<NextPersonPage> {
                   padding: const EdgeInsets.all(15.0),
                   shape: const CircleBorder(),
                   child: const Icon(CupertinoIcons.clear,
+                      size: 40, color: Color.fromARGB(255, 44, 44, 44)),
+                ),
+                RawMaterialButton(
+                  onPressed: () {},
+                  elevation: 2.0,
+                  fillColor: Colors.white,
+                  padding: const EdgeInsets.all(15.0),
+                  shape: const CircleBorder(),
+                  child: const Icon(CupertinoIcons.star,
                       size: 40, color: Color.fromARGB(255, 44, 44, 44)),
                 ),
                 RawMaterialButton(

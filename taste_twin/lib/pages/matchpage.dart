@@ -165,34 +165,36 @@ class _MatchPage extends State<MatchPage> {
 
   void _navigateToNextPage() {
     //print(globalNotifier.getRemUsers());
-    if (globalNotifier.getRemUsers() > 1) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Times up! Switching to next person"),
-        duration: Duration(milliseconds: 5000),
-      ));
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => NextPersonPage(
-            title: 'Taste Twin',
-            matches: _matches,
+    if (mounted) {
+      if (globalNotifier.getRemUsers() > 1) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Times up! Switch to the next person"),
+          duration: Duration(milliseconds: 5000),
+        ));
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => NextPersonPage(
+              title: 'Taste Twin',
+              matches: _matches,
+            ),
           ),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Times up! Showing Results"),
-        duration: Duration(milliseconds: 5000),
-      ));
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => ResultsPage(
-            title: 'Results',
-            matches: _matches,
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Times up! Showing Results"),
+          duration: Duration(milliseconds: 5000),
+        ));
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => ResultsPage(
+              title: 'Results',
+              matches: _matches,
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
   }
 

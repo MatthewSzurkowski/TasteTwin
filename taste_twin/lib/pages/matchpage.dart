@@ -6,6 +6,7 @@ import 'package:swipe_cards/draggable_card.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import 'package:taste_twin/components/preferences_provider.dart';
 import 'package:taste_twin/components/rest.dart';
+import 'package:taste_twin/components/userPreferences_provider.dart';
 import 'package:taste_twin/pages/nextPerson.dart';
 import 'results_page.dart';
 import 'package:taste_twin/models/restaurant.dart';
@@ -162,6 +163,7 @@ class _MatchPage extends State<MatchPage> {
   }
 
   late PreferencesNotifier globalNotifier;
+  late UserPreferencesNotifier globalUserPreferencesNotifier;
   // ignore: unused_field
   Timer? _timer;
   CountdownTimerController? _timerController;
@@ -181,6 +183,7 @@ class _MatchPage extends State<MatchPage> {
     //print(globalNotifier.getRemUsers());
     if (mounted) {
       if (globalNotifier.getRemUsers() > 1) {
+        globalUserPreferencesNotifier.addMatch(_matches);
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Times up! Switch to the next person"),
           duration: Duration(milliseconds: 5000),
@@ -195,6 +198,7 @@ class _MatchPage extends State<MatchPage> {
           ),
         );
       } else {
+        globalUserPreferencesNotifier.addMatch(_matches);
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Times up! Showing Results"),
           duration: Duration(milliseconds: 5000),
@@ -241,6 +245,7 @@ class _MatchPage extends State<MatchPage> {
       final userPreferences = ref.watch(userPreferencesProvider);
       final userPreferencesNotifier =
           ref.watch(userPreferencesProvider.notifier);
+      globalUserPreferencesNotifier = userPreferencesNotifier;
 
       bool allowFastFood = notifier.getFastFood();
 

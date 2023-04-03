@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:taste_twin/models/restaurant.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import '../components/rest.dart';
 import '../components/rank.dart';
@@ -21,7 +20,6 @@ class ResultsPage extends StatelessWidget {
     //sortedMatches.sort((a, b) => a.getTime().compareTo(b.getTime()));
     List<Rest> sortedMatches = [];
     return Consumer(builder: (context, ref, _) {
-      final userPreferences = ref.watch(userPreferencesProvider);
       final userPreferencesNotifier =
           ref.watch(userPreferencesProvider.notifier);
       bool contains = true;
@@ -139,7 +137,6 @@ class ResultsPage extends StatelessWidget {
                                         final splitted = location.split(' ');
                                         String mapsUrl =
                                             'https://www.google.com/maps/search/?api=1&query=';
-
                                         for (int i = 0;
                                             i < splitted.length;
                                             i++) {
@@ -170,16 +167,20 @@ class ResultsPage extends StatelessWidget {
                             style: const TextStyle(fontSize: 12),
                           ),
                           children: [
-                            Text(sortedMatches[index]
-                                .getRestaurant()!
-                                .description
-                                .toString()),
+                            Text(
+                              sortedMatches[index]
+                                  .getRestaurant()!
+                                  .description
+                                  .toString(),
+                              textAlign: TextAlign.left,
+                            ),
                             const SizedBox(
                               height: 10,
                             ),
                             Text(
-                              "Only ${sortedMatches[index].getRestaurant()!.location} km from you.",
+                              "${sortedMatches[index].getRestaurant()!.location}\nOnly ${sortedMatches[index].getRestaurant()!.distanceGuelph} km from you.",
                               style: const TextStyle(fontSize: 12),
+                              textAlign: TextAlign.center,
                             )
                           ],
                         ),

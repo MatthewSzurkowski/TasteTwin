@@ -1,4 +1,3 @@
-import '../models/restaurant.dart';
 import 'rest.dart';
 
 class Rank {

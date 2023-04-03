@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class Restaurant {
   late final String name;
   final String location;

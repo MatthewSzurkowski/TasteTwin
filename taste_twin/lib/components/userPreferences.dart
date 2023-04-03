@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:taste_twin/components/rest.dart';
 
 class UserPreferences {

@@ -20,7 +20,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPage extends State<SettingsPage> {
   final List<bool> _selectedBrightness = <bool>[true, false];
   bool vertical = false;
-  bool location_services = true;
+  bool locationServices = true;
 
   @override
   Widget build(BuildContext context) {
@@ -60,14 +60,14 @@ class _SettingsPage extends State<SettingsPage> {
             const Text('Location Services'),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Switch.adaptive(
-                value: location_services,
+                value: locationServices,
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 activeColor: Colors.blue,
                 thumbColor: const MaterialStatePropertyAll<Color>(Colors.white),
                 onChanged: (bool value) {
                   // This is called when the user toggles the switch.
                   setState(() {
-                    location_services = value;
+                    locationServices = value;
                   });
                 },
               ),

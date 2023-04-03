@@ -1,16 +1,9 @@
-// import 'package:flutter/cupertino.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:swipe_cards/draggable_card.dart';
-// import 'package:cupertino_icons/cupertino_icons.dart';
-import 'package:swipe_cards/swipe_cards.dart';
-import 'package:taste_twin/models/restaurant.dart';
 import '../components/rest.dart';
 import '../main.dart';
 import './matchpage.dart';
-import 'results_page.dart';
-import 'homepage.dart';
 
 class NextPersonPage extends StatefulWidget {
   //REMOVE MATCHES LATER
@@ -25,7 +18,6 @@ class NextPersonPage extends StatefulWidget {
 class _NextPersonPage extends State<NextPersonPage> {
   @override
   Widget build(BuildContext context) {
-    List<Rest> matches = widget.matches;
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -34,7 +26,6 @@ class _NextPersonPage extends State<NextPersonPage> {
     // than having to individually change instances of widgets.
     return Consumer(builder: (context, ref, _) {
       final notifier = ref.watch(preferencesProvider.notifier);
-      final preferences = ref.watch(preferencesProvider);
       return Scaffold(
           appBar: AppBar(
             // Here we take the value from the MyHomePage object that was created by

@@ -1,18 +1,8 @@
-import 'dart:convert';
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:cupertino_icons/cupertino_icons.dart';
-import 'package:taste_twin/components/UserPreferences.dart';
-import 'package:taste_twin/components/UserPreferences_provider.dart';
-import 'package:taste_twin/models/restaurant.dart';
-import 'package:taste_twin/pages/results_page.dart';
 import '../components/MainDrawer.dart';
 import 'filterspage.dart';
 import 'matchpage.dart';
-import '../components/preferences.dart';
-import '../components/preferences_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../main.dart';
 
@@ -31,10 +21,8 @@ class _MyHomePageState extends State<MyHomePage> {
     return Consumer(
       builder: (context, ref, _) {
         final notifier = ref.watch(preferencesProvider.notifier);
-        final preferences = ref.watch(preferencesProvider);
         final userPreferencesNotifier =
             ref.watch(userPreferencesProvider.notifier);
-        final userPreferences = ref.watch(userPreferencesProvider);
         notifier.setRemUsers();
         userPreferencesNotifier.clearMatches();
         return Scaffold(
@@ -73,7 +61,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (BuildContext context) => MatchPage(
+                                builder: (BuildContext context) =>
+                                    const MatchPage(
                                   title: 'Taste Twin',
                                 ),
                               ),

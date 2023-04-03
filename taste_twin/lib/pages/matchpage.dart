@@ -1,21 +1,16 @@
-import 'dart:ffi';
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:swipe_cards/draggable_card.dart';
-// import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import 'package:taste_twin/components/preferences_provider.dart';
 import 'package:taste_twin/components/rest.dart';
-import 'package:taste_twin/components/userPreferences.dart';
 import 'package:taste_twin/pages/nextPerson.dart';
 import 'results_page.dart';
 import 'package:taste_twin/models/restaurant.dart';
 import 'dart:convert';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../components/UserPreferences_provider.dart';
-import 'results_page.dart';
 import 'package:taste_twin/main.dart';
 
 class Content {
@@ -63,10 +58,9 @@ class MatchPage extends StatefulWidget {
 }
 
 class _MatchPage extends State<MatchPage> {
-  List<SwipeItem> _swipeItems = <SwipeItem>[];
-  List<Rest> _matches = <Rest>[];
+  final List<SwipeItem> _swipeItems = <SwipeItem>[];
+  final List<Rest> _matches = <Rest>[];
   late MatchEngine _matchEngine;
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   List<Restaurant> restaurants = <Restaurant>[];
   int startTimeInt = 0;
   int interations = 0;
@@ -79,10 +73,19 @@ class _MatchPage extends State<MatchPage> {
   }
 
   void readDB() async {
+    // ignore: unused_local_variable
     FirebaseDatabase database = FirebaseDatabase.instance;
     DatabaseReference ref = FirebaseDatabase.instance.ref();
     DatabaseEvent event = await ref.once();
     restaurants = parseRestaurants(event.snapshot.value.toString());
+  }
+
+  Future<List<dynamic>> readDB2() async {
+    FirebaseDatabase database = FirebaseDatabase.instance;
+    DatabaseReference ref = FirebaseDatabase.instance.ref();
+    DatabaseEvent event = await ref.once();
+    restaurants = parseRestaurants(event.snapshot.value.toString());
+    return restaurants;
   }
 
   var beginningTimeInSeconds = 0.0;
@@ -91,7 +94,7 @@ class _MatchPage extends State<MatchPage> {
   @override
   void initState() {
     super.initState();
-    readDB();
+    //readDB();
     // List<Restaurant> restaurants = readDB();
     _matchEngine = MatchEngine(swipeItems: _swipeItems);
     Future.delayed(const Duration(seconds: 1), () {
@@ -158,11 +161,12 @@ class _MatchPage extends State<MatchPage> {
   }
 
   late PreferencesNotifier globalNotifier;
+  // ignore: unused_field
   Timer? _timer;
 
   void _startTimer() {
-    final Duration _timerDuration = Duration(seconds: globalNotifier.getTime());
-    _timer = Timer(_timerDuration, _navigateToNextPage);
+    final Duration timerDuration = Duration(seconds: globalNotifier.getTime());
+    _timer = Timer(timerDuration, _navigateToNextPage);
   }
 
   void _navigateToNextPage() {
@@ -226,7 +230,6 @@ class _MatchPage extends State<MatchPage> {
       final notifier = ref.watch(preferencesProvider.notifier);
       globalNotifier = notifier;
       _startTimer();
-      final preferences = ref.watch(preferencesProvider);
       final userPreferences = ref.watch(userPreferencesProvider);
       final userPreferencesNotifier =
           ref.watch(userPreferencesProvider.notifier);
@@ -257,6 +260,10 @@ class _MatchPage extends State<MatchPage> {
       double distance = notifier.getSearchDistanceValue();
 
       for (int i = 0; i < _swipeItems.length; i++) {
+        if (_swipeItems.isEmpty) {
+          globalRemUsers = 0;
+          _showSwipeCards = false;
+        }
         //If the user doesn't want fast food, remove fast food restaurants
         bool skipped = false;
         //print(_swipeItems[i].content.tags.toString());
@@ -283,11 +290,13 @@ class _MatchPage extends State<MatchPage> {
             break;
           }
         }
-
         if (skipped) {
+          if (_swipeItems.isEmpty) {
+            globalRemUsers = 0;
+            _showSwipeCards = false;
+          }
           continue;
         }
-
         //Remove restaurants that are too far away
         if (_swipeItems[i].content.distanceGuelph > distance) {
           _swipeItems.removeAt(i);
@@ -305,73 +314,100 @@ class _MatchPage extends State<MatchPage> {
           ),
           body: _showSwipeCards
               ? Column(children: [
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.75,
-                    width: 400,
-                    child: SwipeCards(
-                      matchEngine: _matchEngine,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: _swipeItems[index].content.color,
-                          ),
-                          alignment: Alignment.center,
-                          child: card(_swipeItems[index]),
-                        );
-                      },
-                      onStackFinished: () {
-                        userPreferencesNotifier.addMatch(_matches);
-                        print("Matches object: ${userPreferences.matches}");
-                        _handleStackFinished();
-                      },
-                      itemChanged: (SwipeItem item, int index) {
-                        // for (var i = 0; i < _matches.length; i++) {
-                        //   print(
-                        //       "List of Restaurants ${i + 1}: ${_matches[i].rest!.name}, ${_matches[i].time}");
-                        // }
-                      },
-                      upSwipeAllowed: true,
-                      fillSpace: true,
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      RawMaterialButton(
-                        onPressed: () {
-                          _matchEngine.currentItem?.nope();
-                        },
-                        elevation: 2.0,
-                        fillColor: Colors.white,
-                        padding: const EdgeInsets.all(15.0),
-                        shape: const CircleBorder(),
-                        child: const Icon(CupertinoIcons.clear,
-                            size: 40, color: Color.fromARGB(255, 132, 18, 18)),
-                      ),
-                      RawMaterialButton(
-                        onPressed: () {
-                          _matchEngine.currentItem?.superLike();
-                        },
-                        elevation: 2.0,
-                        fillColor: Colors.white,
-                        padding: const EdgeInsets.all(15.0),
-                        shape: const CircleBorder(),
-                        child: const Icon(CupertinoIcons.star,
-                            size: 40, color: Colors.blue),
-                      ),
-                      RawMaterialButton(
-                        onPressed: () {
-                          _matchEngine.currentItem?.like();
-                        },
-                        elevation: 2.0,
-                        fillColor: Colors.white,
-                        padding: const EdgeInsets.all(15.0),
-                        shape: const CircleBorder(),
-                        child: const Icon(CupertinoIcons.heart,
-                            size: 40, color: Color.fromARGB(255, 15, 128, 15)),
-                      ),
-                    ],
-                  )
+                  Expanded(
+                      child: FutureBuilder(
+                          future: readDB2(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                  child: Text('Error: ${snapshot.error}'));
+                            } else {
+                              return Column(children: [
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.75,
+                                  width: 400,
+                                  child: SwipeCards(
+                                    matchEngine: _matchEngine,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                          color:
+                                              _swipeItems[index].content.color,
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: card(_swipeItems[index]),
+                                      );
+                                    },
+                                    onStackFinished: () {
+                                      userPreferencesNotifier
+                                          .addMatch(_matches);
+                                      print(
+                                          "Matches object: ${userPreferences.matches}");
+                                      _handleStackFinished();
+                                    },
+                                    itemChanged: (SwipeItem item, int index) {
+                                      // for (var i = 0; i < _matches.length; i++) {
+                                      //   print(
+                                      //       "List of Restaurants ${i + 1}: ${_matches[i].rest!.name}, ${_matches[i].time}");
+                                      // }
+                                    },
+                                    upSwipeAllowed: true,
+                                    fillSpace: true,
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    RawMaterialButton(
+                                      onPressed: () {
+                                        _matchEngine.currentItem?.nope();
+                                      },
+                                      elevation: 2.0,
+                                      fillColor: Colors.white,
+                                      padding: const EdgeInsets.all(15.0),
+                                      shape: const CircleBorder(),
+                                      child: const Icon(CupertinoIcons.clear,
+                                          size: 40,
+                                          color:
+                                              Color.fromARGB(255, 132, 18, 18)),
+                                    ),
+                                    RawMaterialButton(
+                                      onPressed: () {
+                                        _matchEngine.currentItem?.superLike();
+                                      },
+                                      elevation: 2.0,
+                                      fillColor: Colors.white,
+                                      padding: const EdgeInsets.all(15.0),
+                                      shape: const CircleBorder(),
+                                      child: const Icon(CupertinoIcons.star,
+                                          size: 40, color: Colors.blue),
+                                    ),
+                                    RawMaterialButton(
+                                      onPressed: () {
+                                        _matchEngine.currentItem?.like();
+                                      },
+                                      elevation: 2.0,
+                                      fillColor: Colors.white,
+                                      padding: const EdgeInsets.all(15.0),
+                                      shape: const CircleBorder(),
+                                      child: const Icon(CupertinoIcons.heart,
+                                          size: 40,
+                                          color:
+                                              Color.fromARGB(255, 15, 128, 15)),
+                                    ),
+                                  ],
+                                )
+                              ]);
+                            }
+                          }))
                 ])
               : Center(child: Builder(
                   builder: (context) {
@@ -476,7 +512,7 @@ class _MatchPage extends State<MatchPage> {
                 )
               ],
             )
-          : Container(
+          : SizedBox(
               width: 400,
               child: Column(
                 children: [
@@ -496,6 +532,9 @@ class _MatchPage extends State<MatchPage> {
                           ),
                           Text(
                             "${item.content.description}",
+                            style: const TextStyle(
+                              fontSize: 16,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 8),
@@ -509,6 +548,9 @@ class _MatchPage extends State<MatchPage> {
                           ),
                           Text(
                             "${item.content.location}\n${item.content.distanceGuelph} km away.",
+                            style: const TextStyle(
+                              fontSize: 16,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                         ],

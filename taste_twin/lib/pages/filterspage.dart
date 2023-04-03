@@ -1,10 +1,10 @@
+// ignore_for_file: no_logic_in_create_state
+
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../components/preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../main.dart';
-import '/components/preferences_provider.dart';
 import '../components/MainDrawer.dart';
 
 const List<String> list = <String>["1", "2", "3", "4", "5"];

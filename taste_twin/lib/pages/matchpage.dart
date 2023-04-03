@@ -90,6 +90,7 @@ class _MatchPage extends State<MatchPage> {
 
   var beginningTimeInSeconds = 0.0;
   int globalRemUsers = 1;
+  late DateTime globalStartTime = DateTime.now();
 
   @override
   void initState() {
@@ -98,14 +99,7 @@ class _MatchPage extends State<MatchPage> {
     // List<Restaurant> restaurants = readDB();
     _matchEngine = MatchEngine(swipeItems: _swipeItems);
     Future.delayed(const Duration(seconds: 1), () {
-      DateTime beginningTime = DateTime.now();
-      var startTime =
-          "${beginningTime.minute}${beginningTime.second}${beginningTime.millisecond}";
-      var minutes = int.parse(startTime.substring(0, 2));
-      var seconds = int.parse(startTime.substring(2, 4));
-      var milliseconds = int.parse(startTime.substring(4));
-      var startTimeInSeconds = minutes * 60 + seconds + (milliseconds / 1000);
-      beginningTimeInSeconds = startTimeInSeconds;
+      globalStartTime = DateTime.now();
       var cond = 0;
       setState(() {
         for (int i = 0; i < restaurants.length; i++) {
@@ -125,14 +119,11 @@ class _MatchPage extends State<MatchPage> {
               ),
               likeAction: () {
                 DateTime now = DateTime.now();
-                var endTime = "${now.minute}${now.second}${now.millisecond}";
-                var minutes = int.parse(endTime.substring(0, 2));
-                var seconds = int.parse(endTime.substring(2, 4));
-                var milliseconds = int.parse(endTime.substring(4));
-                var endTimeInSeconds =
-                    minutes * 60 + seconds + (milliseconds / 1000);
-                double difference = endTimeInSeconds - startTimeInSeconds;
-                _handleLikedRestaurant(difference, i);
+                Duration difference = now.difference(globalStartTime);
+                double differenceInSeconds = difference.inMilliseconds / 1000;
+                print("DIFFERENCE: $differenceInSeconds");
+                print("----");
+                _handleLikedRestaurant(differenceInSeconds, i);
                 cond = 0;
               },
               nopeAction: () {
@@ -144,15 +135,7 @@ class _MatchPage extends State<MatchPage> {
               },
               onSlideUpdate: (SlideRegion? region) async {
                 if (cond == 0) {
-                  DateTime startNow = DateTime.now();
-                  startTime =
-                      "${startNow.minute}${startNow.second}${startNow.millisecond}";
-                  minutes = int.parse(startTime.substring(0, 2));
-                  seconds = int.parse(startTime.substring(2, 4));
-                  milliseconds = int.parse(startTime.substring(4));
-                  startTimeInSeconds =
-                      minutes * 60 + seconds + (milliseconds / 1000);
-                  cond = 1;
+                  globalStartTime = DateTime.now();
                 }
               }));
         }
@@ -353,7 +336,9 @@ class _MatchPage extends State<MatchPage> {
                                       _handleStackFinished();
                                     },
                                     itemChanged: (SwipeItem item, int index) {
-                                      // for (var i = 0; i < _matches.length; i++) {
+                                      // for (var i = 0;
+                                      //     i < _matches.length;
+                                      //     i++) {
                                       //   print(
                                       //       "List of Restaurants ${i + 1}: ${_matches[i].rest!.name}, ${_matches[i].time}");
                                       // }

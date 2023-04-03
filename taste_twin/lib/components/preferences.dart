@@ -9,8 +9,8 @@ class Preferences {
     'Chinese',
     'Mexican',
     'Indian',
-    'French',
-    'Japanese',
+    'Canadian',
+    'Greek',
     'American'
   ];
 
@@ -35,8 +35,8 @@ final preferences = Preferences(
     'Chinese',
     'Mexican',
     'Indian',
-    'French',
-    'Japanese',
+    'Canadian',
+    'Greek',
     'American'
   ],
 );

@@ -1,10 +1,11 @@
 import 'dart:ffi';
-
+import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:swipe_cards/draggable_card.dart';
 // import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:swipe_cards/swipe_cards.dart';
+import 'package:taste_twin/components/preferences_provider.dart';
 import 'package:taste_twin/components/rest.dart';
 import 'package:taste_twin/components/userPreferences.dart';
 import 'package:taste_twin/pages/nextPerson.dart';
@@ -28,7 +29,7 @@ class Content {
   final String? pictureUrl;
   final double distanceGuelph;
   bool isCardFlipped;
-  // final List<String> tags;
+  final List<String> tags;
 
   void setIsCardFlipped(bool value) {
     isCardFlipped = value;
@@ -49,13 +50,14 @@ class Content {
     required this.pictureUrl,
     required this.isCardFlipped,
     required this.distanceGuelph,
-    // required this.tags});
+    required this.tags,
   });
 }
 
 class MatchPage extends StatefulWidget {
   const MatchPage({super.key, required this.title});
   final String title;
+
   @override
   State<MatchPage> createState() => _MatchPage();
 }
@@ -73,7 +75,6 @@ class _MatchPage extends State<MatchPage> {
     // This method parses the JSON response from the database and creates
     // restaurant objects for each JSON object and returns them in a list.
     final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
-
     return parsed.map<Restaurant>((json) => Restaurant.fromJson(json)).toList();
   }
 
@@ -84,23 +85,25 @@ class _MatchPage extends State<MatchPage> {
     restaurants = parseRestaurants(event.snapshot.value.toString());
   }
 
+  var beginningTimeInSeconds = 0.0;
+
   @override
   void initState() {
     super.initState();
     readDB();
     _matchEngine = MatchEngine(swipeItems: _swipeItems);
     Future.delayed(const Duration(seconds: 1), () {
+      DateTime beginningTime = DateTime.now();
+      var startTime =
+          "${beginningTime.minute}${beginningTime.second}${beginningTime.millisecond}";
+      var minutes = int.parse(startTime.substring(0, 2));
+      var seconds = int.parse(startTime.substring(2, 4));
+      var milliseconds = int.parse(startTime.substring(4));
+      var startTimeInSeconds = minutes * 60 + seconds + (milliseconds / 1000);
+      beginningTimeInSeconds = startTimeInSeconds;
+      var cond = 0;
       setState(() {
-        DateTime now = DateTime.now();
-        var startTime = "${now.minute}${now.second}${now.millisecond}";
-        var minutes = int.parse(startTime.substring(0, 2));
-        var seconds = int.parse(startTime.substring(2, 4));
-        var milliseconds = int.parse(startTime.substring(4));
-        var startTimeInSeconds = minutes * 60 + seconds + (milliseconds / 1000);
-        var cond = 0;
-
         for (int i = 0; i < restaurants.length; i++) {
-          // print(restaurants[i].pictureURL);
           _swipeItems.add(SwipeItem(
               content: Content(
                 isCardFlipped: false,
@@ -113,7 +116,7 @@ class _MatchPage extends State<MatchPage> {
                 pictureUrl: restaurants[i].pictureURL,
                 distanceGuelph: restaurants[i].distanceGuelph,
                 color: Colors.white,
-                // tags: tempRestaurantList[i].tags,
+                tags: restaurants[i].tags,
               ),
               likeAction: () {
                 DateTime now = DateTime.now();
@@ -152,6 +155,47 @@ class _MatchPage extends State<MatchPage> {
     });
   }
 
+  late PreferencesNotifier globalNotifier;
+  Timer? _timer;
+
+  void _startTimer() {
+    final Duration _timerDuration = Duration(seconds: globalNotifier.getTime());
+    _timer = Timer(_timerDuration, _navigateToNextPage);
+  }
+
+  void _navigateToNextPage() {
+    //print(globalNotifier.getRemUsers());
+    if (globalNotifier.getRemUsers() > 1) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Times up! Switching to next person"),
+        duration: Duration(milliseconds: 5000),
+      ));
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => NextPersonPage(
+            title: 'Taste Twin',
+            matches: _matches,
+          ),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Times up! Showing Results"),
+        duration: Duration(milliseconds: 5000),
+      ));
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => ResultsPage(
+            title: 'Results',
+            matches: _matches,
+          ),
+        ),
+      );
+    }
+  }
+
   bool _showSwipeCards = true;
 
   void _handleStackFinished() {
@@ -161,12 +205,7 @@ class _MatchPage extends State<MatchPage> {
   }
 
   void _handleLikedRestaurant(double time, int index) {
-    // _matches.add(restaurants[index], time: time);
-    // Rest newRest = Rest(restaurants[index], time);
-    // newRest.setRestaurant(restaurants[index]);
-    // newRest.setTime(time);
     Rest restaurantObject = Rest(rest: restaurants[index], time: time);
-
     _matches.add(restaurantObject);
   }
 
@@ -181,66 +220,76 @@ class _MatchPage extends State<MatchPage> {
   Widget build(BuildContext context) {
     return Consumer(builder: (context, ref, _) {
       final notifier = ref.watch(preferencesProvider.notifier);
+      globalNotifier = notifier;
+      _startTimer();
       final preferences = ref.watch(preferencesProvider);
       final userPreferences = ref.watch(userPreferencesProvider);
       final userPreferencesNotifier =
           ref.watch(userPreferencesProvider.notifier);
 
-      // bool allowFastFood = notifier.getFastFood();
+      bool allowFastFood = notifier.getFastFood();
 
-      // //Get the restaurants that the user has unliked
-      // List<String> options = [
-      //   "Italian",
-      //   "Chinese",
-      //   "Mexican",
-      //   "Indian",
-      //   "French",
-      //   "Japanese",
-      //   "American",
-      // ];
+      //Get the restaurants that the user has unliked
+      List<String> options = [
+        "Italian",
+        "Chinese",
+        "Mexican",
+        "Indian",
+        "Canadian",
+        "Greek",
+        "American",
+      ];
 
-      // List<dynamic> values = notifier.getSelectedCuisines();
-      // List<String> cuisinesNotChosen = [];
+      List<dynamic> values = notifier.getSelectedCuisines();
+      List<String> cuisinesNotChosen = [];
 
-      // //Get the list of unselected cuisines
-      // for (int i = 0; i < options.length; i++) {
-      //   if (!values.contains(options[i])) {
-      //     cuisinesNotChosen.add(options[i]);
-      //   }
-      // }
+      //Get the list of unselected cuisines
+      for (int i = 0; i < options.length; i++) {
+        if (!values.contains(options[i])) {
+          cuisinesNotChosen.add(options[i]);
+        }
+      }
 
-      // double distance = notifier.getSearchDistanceValue();
+      double distance = notifier.getSearchDistanceValue();
 
-      // for (int i = 0; i < _swipeItems.length; i++) {
-      //   //If the user doesn't want fast food, remove fast food restaurants
-      //   if (!allowFastFood) {
-      //     if (_swipeItems[i].content.tags.contains("Fast Food")) {
-      //       _swipeItems.removeAt(i);
-      //     }
-      //   }
+      for (int i = 0; i < _swipeItems.length; i++) {
+        //If the user doesn't want fast food, remove fast food restaurants
+        bool skipped = false;
+        //print(_swipeItems[i].content.tags.toString());
 
-      //   bool skipped = false;
+        if (!allowFastFood) {
+          if (_swipeItems[i].content.tags.contains("Fast Food")) {
+            _swipeItems.removeAt(i);
+            i -= 1;
+            skipped = true;
+            //break;
+          }
+        }
 
-      //   //If they don't want a cuisine, remove it
-      //   for (int j = 0; j < cuisinesNotChosen.length; j++) {
-      //     if (_swipeItems[i].content.tags.contains(cuisinesNotChosen[j])) {
-      //       _swipeItems.removeAt(i);
-      //       i -= 1;
-      //       skipped = true;
-      //       break;
-      //     }
-      //   }
+        if (skipped) {
+          continue;
+        }
 
-      //   if (skipped) {
-      //     continue;
-      //   }
+        //If they don't want a cuisine, remove it
+        for (int j = 0; j < cuisinesNotChosen.length; j++) {
+          if (_swipeItems[i].content.tags.contains(cuisinesNotChosen[j])) {
+            _swipeItems.removeAt(i);
+            i -= 1;
+            skipped = true;
+            break;
+          }
+        }
 
-      //   //Remove restaurants that are too far away
-      //   if (_swipeItems[i].content.location > distance) {
-      //     _swipeItems.removeAt(i);
-      //     i -= 1;
-      //   }
-      // }
+        if (skipped) {
+          continue;
+        }
+
+        //Remove restaurants that are too far away
+        if (_swipeItems[i].content.location > distance) {
+          _swipeItems.removeAt(i);
+          i -= 1;
+        }
+      }
 
       return Scaffold(
           appBar: AppBar(
@@ -261,7 +310,6 @@ class _MatchPage extends State<MatchPage> {
                                   const BorderRadius.all(Radius.circular(10))),
                           margin: const EdgeInsets.all(8),
                           alignment: Alignment.center,
-                          // color: _swipeItems[index].content.color,
                           child: Stack(
                             children: [
                               Container(
@@ -348,21 +396,10 @@ class _MatchPage extends State<MatchPage> {
                         _handleStackFinished();
                       },
                       itemChanged: (SwipeItem item, int index) {
-                        DateTime now = DateTime.now();
-                        var startTime =
-                            "${now.minute}${now.second}${now.millisecond}";
-                        var minutes = int.parse(startTime.substring(0, 2));
-                        var seconds = int.parse(startTime.substring(2, 4));
-                        var milliseconds = int.parse(startTime.substring(4));
-                        var startTimeInSeconds =
-                            minutes * 60 + seconds + (milliseconds / 1000);
-                        print("item: ${item.content.text}, index: $index");
-                        // print("Matches object: ${userPreferences.matches}");
-                        //print("List of Restaurants: $_matches");
-                        for (var i = 0; i < _matches.length; i++) {
-                          // print(
-                          // "List of Restaurants ${i + 1}: ${_matches[i].rest!.name}, ${_matches[i].time}");
-                        }
+                        // for (var i = 0; i < _matches.length; i++) {
+                        //   print(
+                        //       "List of Restaurants ${i + 1}: ${_matches[i].rest!.name}, ${_matches[i].time}");
+                        // }
                       },
                       upSwipeAllowed: true,
                       fillSpace: true,

@@ -36,7 +36,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ref.watch(userPreferencesProvider.notifier);
         final userPreferences = ref.watch(userPreferencesProvider);
         notifier.setRemUsers();
-
         userPreferencesNotifier.clearMatches();
         return Scaffold(
             appBar: AppBar(
@@ -74,8 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    const MatchPage(
+                                builder: (BuildContext context) => MatchPage(
                                   title: 'Taste Twin',
                                 ),
                               ),

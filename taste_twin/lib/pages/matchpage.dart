@@ -305,89 +305,10 @@ class _MatchPage extends State<MatchPage> {
                       itemBuilder: (BuildContext context, int index) {
                         return Container(
                           decoration: BoxDecoration(
-                              color: _swipeItems[index].content.color,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(10))),
-                          margin: const EdgeInsets.all(8),
-                          alignment: Alignment.center,
-                          child: Stack(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: NetworkImage(
-                                        _swipeItems[index].content.pictureUrl),
-                                    fit: BoxFit.fitHeight,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                decoration: const BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment(0, 0),
-                                    end: Alignment(0, 1),
-                                    colors: [
-                                      Colors.transparent,
-                                      Colors.black,
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          _swipeItems[index].content.name,
-                                          style: const TextStyle(
-                                              fontSize: 20,
-                                              color: Color.fromARGB(
-                                                  255, 255, 255, 255)),
-                                        ),
-                                        Text(_swipeItems[index].content.price,
-                                            style: const TextStyle(
-                                                fontSize: 20,
-                                                color: Color.fromARGB(
-                                                    255, 255, 255, 255))),
-                                        Text(
-                                            "${_swipeItems[index].content.distanceGuelph} kms away",
-                                            style: const TextStyle(
-                                                fontSize: 20,
-                                                color: Color.fromARGB(
-                                                    255, 255, 255, 255))),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          IconButton(
-                                            onPressed: () {
-                                              print("Clicked");
-                                            },
-                                            icon: const Icon(
-                                                CupertinoIcons.info,
-                                                size: 40,
-                                                color: Colors.white),
-                                          )
-                                        ],
-                                      ))
-                                ],
-                              )
-                            ],
+                            color: _swipeItems[index].content.color,
                           ),
+                          alignment: Alignment.center,
+                          child: card(_swipeItems[index]),
                         );
                       },
                       onStackFinished: () {
@@ -483,7 +404,6 @@ class _MatchPage extends State<MatchPage> {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
                     image: DecorationImage(
                       image: NetworkImage(item.content.pictureUrl),
                       fit: BoxFit.fitHeight,
@@ -492,7 +412,6 @@ class _MatchPage extends State<MatchPage> {
                 ),
                 Container(
                   decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
                     gradient: LinearGradient(
                       begin: Alignment(0, 0),
                       end: Alignment(0, 1),
@@ -551,9 +470,6 @@ class _MatchPage extends State<MatchPage> {
             )
           : Container(
               width: 400,
-              decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                  border: Border.all(color: Colors.blue, width: 2)),
               child: Column(
                 children: [
                   Expanded(
@@ -572,6 +488,7 @@ class _MatchPage extends State<MatchPage> {
                           ),
                           Text(
                             "${item.content.description}",
+                            textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 8),
                           const Text(
@@ -583,7 +500,8 @@ class _MatchPage extends State<MatchPage> {
                             ),
                           ),
                           Text(
-                            "${item.content.distanceGuelph} km away.",
+                            "${item.content.location}\n${item.content.distanceGuelph} km away.",
+                            textAlign: TextAlign.center,
                           ),
                         ],
                       ),

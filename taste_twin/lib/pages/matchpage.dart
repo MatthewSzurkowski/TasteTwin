@@ -21,11 +21,12 @@ class Content {
   final String text;
   final Color color;
   final String name;
-  final double location;
+  final String location;
   final String? price;
   final String? type;
   final String? description;
   final String? pictureUrl;
+  final double distanceGuelph;
   bool isCardFlipped;
   // final List<String> tags;
 
@@ -47,6 +48,7 @@ class Content {
     required this.description,
     required this.pictureUrl,
     required this.isCardFlipped,
+    required this.distanceGuelph,
     // required this.tags});
   });
 }
@@ -109,6 +111,7 @@ class _MatchPage extends State<MatchPage> {
                 type: restaurants[i].type,
                 description: restaurants[i].description,
                 pictureUrl: restaurants[i].pictureURL,
+                distanceGuelph: restaurants[i].distanceGuelph,
                 color: Colors.white,
                 // tags: tempRestaurantList[i].tags,
               ),
@@ -258,7 +261,7 @@ class _MatchPage extends State<MatchPage> {
                                   const BorderRadius.all(Radius.circular(10))),
                           margin: const EdgeInsets.all(8),
                           alignment: Alignment.center,
-                          color: _swipeItems[index].content.color,
+                          // color: _swipeItems[index].content.color,
                           child: Stack(
                             children: [
                               Container(
@@ -306,7 +309,7 @@ class _MatchPage extends State<MatchPage> {
                                                 color: Color.fromARGB(
                                                     255, 255, 255, 255))),
                                         Text(
-                                            "${_swipeItems[index].content.location} kms away",
+                                            "${_swipeItems[index].content.distanceGuelph} kms away",
                                             style: const TextStyle(
                                                 fontSize: 20,
                                                 color: Color.fromARGB(
@@ -482,7 +485,7 @@ class _MatchPage extends State<MatchPage> {
                               style: const TextStyle(
                                   fontSize: 20,
                                   color: Color.fromARGB(255, 255, 255, 255))),
-                          Text("${item.content.location} kms away",
+                          Text("${item.content.distanceGuelph} kms away",
                               style: const TextStyle(
                                   fontSize: 20,
                                   color: Color.fromARGB(255, 255, 255, 255))),
@@ -543,7 +546,7 @@ class _MatchPage extends State<MatchPage> {
                             ),
                           ),
                           Text(
-                            "${item.content.location} km away.",
+                            "${item.content.distanceGuelph} km away.",
                           ),
                         ],
                       ),

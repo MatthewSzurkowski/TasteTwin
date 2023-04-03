@@ -2,8 +2,7 @@ import 'dart:ffi';
 
 class Restaurant {
   late final String name;
-  final double
-      location; //Location is set to distanceGuelph which is stored in the database
+  final String location;
   final String type;
   final Map<String, String>? menu;
   final String? description;
@@ -12,6 +11,7 @@ class Restaurant {
   final String price; // estimated on a 5 point scale
   final List<String> tags;
   final bool isFastFood;
+  final double distanceGuelph;
 
   Restaurant({
     required this.name,
@@ -23,12 +23,13 @@ class Restaurant {
     required this.price,
     required this.isFastFood,
     required this.tags,
+    required this.distanceGuelph,
   });
 
   factory Restaurant.fromJson(Map<String, dynamic> json) {
     return Restaurant(
       name: json['name'],
-      location: json['distanceGuelph'],
+      location: json['location'],
       type: json['type'],
       menu: null, // Map<String, String>.from(json['menu']),
       description: json['description'],
@@ -36,6 +37,7 @@ class Restaurant {
       price: json['price_level'],
       isFastFood: json['isFastFood'],
       tags: List<String>.from(json['tags']),
+      distanceGuelph: json['distanceGuelph'],
     );
   }
 

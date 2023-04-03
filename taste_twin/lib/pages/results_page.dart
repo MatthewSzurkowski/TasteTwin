@@ -120,8 +120,19 @@ class ResultsPage extends StatelessWidget {
                                     child: ElevatedButton.icon(
                                       onPressed: () {
                                         // your button action goes here
+                                        String location = sortedMatches[index]
+                                            .getRestaurant()!
+                                            .location;
+                                        final splitted = location.split(' ');
                                         String mapsUrl =
-                                            'https://www.google.com/maps/search/?api=1&query=the+manor+guelph';
+                                            'https://www.google.com/maps/search/?api=1&query=';
+
+                                        for (int i = 0;
+                                            i < splitted.length;
+                                            i++) {
+                                          mapsUrl += splitted[i];
+                                          mapsUrl += '+';
+                                        }
                                         launchUrlString(mapsUrl);
                                       },
                                       icon: const Icon(

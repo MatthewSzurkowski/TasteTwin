@@ -86,11 +86,13 @@ class _MatchPage extends State<MatchPage> {
   }
 
   var beginningTimeInSeconds = 0.0;
+  int globalRemUsers = 1;
 
   @override
   void initState() {
     super.initState();
     readDB();
+    // List<Restaurant> restaurants = readDB();
     _matchEngine = MatchEngine(swipeItems: _swipeItems);
     Future.delayed(const Duration(seconds: 1), () {
       DateTime beginningTime = DateTime.now();
@@ -291,6 +293,10 @@ class _MatchPage extends State<MatchPage> {
           _swipeItems.removeAt(i);
           i -= 1;
         }
+        if (_swipeItems.isEmpty) {
+          globalRemUsers = 0;
+          _showSwipeCards = false;
+        }
       }
 
       return Scaffold(
@@ -370,7 +376,7 @@ class _MatchPage extends State<MatchPage> {
               : Center(child: Builder(
                   builder: (context) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                      if (notifier.getRemUsers() > 1) {
+                      if ((notifier.getRemUsers() > 1) && globalRemUsers > 0) {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(

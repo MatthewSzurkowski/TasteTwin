@@ -48,8 +48,11 @@ class _AboutPage extends State<AboutPage> {
               style: TextStyle(fontSize: 30),
             ),
             SizedBox(height: 20),
-            Text(
-                "We use location services to provide accurate and useful suggestions of restauarants you may be interested in. We do not store this information. We do not store any personally identifiable information. ")
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                  "We use location services to provide accurate and useful suggestions of restauarants you may be interested in. We do not store this information. We do not store any personally identifiable information. "),
+            )
           ],
         )),
         drawer: const MainDrawer(

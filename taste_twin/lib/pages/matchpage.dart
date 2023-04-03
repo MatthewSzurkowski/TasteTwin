@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_countdown_timer/index.dart';
 import 'package:swipe_cards/draggable_card.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import 'package:taste_twin/components/preferences_provider.dart';
@@ -163,10 +164,17 @@ class _MatchPage extends State<MatchPage> {
   late PreferencesNotifier globalNotifier;
   // ignore: unused_field
   Timer? _timer;
+  CountdownTimerController? _timerController;
 
   void _startTimer() {
     final Duration timerDuration = Duration(seconds: globalNotifier.getTime());
-    _timer = Timer(timerDuration, _navigateToNextPage);
+    // _timer = Timer(timerDuration, _navigateToNextPage);
+
+    int endTime =
+        DateTime.now().millisecondsSinceEpoch + timerDuration.inMilliseconds;
+
+    _timerController =
+        CountdownTimerController(endTime: endTime, onEnd: _navigateToNextPage);
   }
 
   void _navigateToNextPage() {
@@ -311,6 +319,22 @@ class _MatchPage extends State<MatchPage> {
       return Scaffold(
           appBar: AppBar(
             title: Text(widget.title),
+            leading: CountdownTimer(
+                controller: _timerController,
+                widgetBuilder: (context, time) => Center(
+                        child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(width: 3),
+                        const Padding(
+                          padding: EdgeInsets.all(4.0),
+                          child: Icon(CupertinoIcons.time, size: 16),
+                        ),
+                        Text(
+                            "${time?.min ?? ""}${time?.min == null ? "" : ":"}${time?.sec.toString().padLeft(2, '0') ?? ""}"),
+                      ],
+                    ))),
           ),
           body: _showSwipeCards
               ? Column(children: [

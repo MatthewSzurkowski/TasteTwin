@@ -5,8 +5,8 @@ import '/components/preferences_provider.dart';
 import '/components/preferences.dart';
 import '/components/userPreferences.dart';
 import '/components/userPreferences_provider.dart';
-
-//final preferencesProvider = Provider<Preferences>((ref) => preferences);
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 final preferencesProvider =
     StateNotifierProvider<PreferencesNotifier, Preferences>(
@@ -16,12 +16,18 @@ final userPreferencesProvider =
     StateNotifierProvider<UserPreferencesNotifier, UserPreferences>(
         (ref) => UserPreferencesNotifier());
 
-void main() {
+void main() async {
   runApp(
     ProviderScope(
       child: MyApp(),
     ),
   );
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

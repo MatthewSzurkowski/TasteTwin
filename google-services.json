@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "637634980391",
+    "project_id": "taste-twin",
+    "storage_bucket": "taste-twin.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:637634980391:android:99510097fbb02ff2d3bc02",
+        "android_client_info": {
+          "package_name": "com.example.taste_twin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "637634980391-onf24ifflhtje35e3gqbfll7gopvesok.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaJHAWRWa9XuLQwt0ZdoXLRVj-1jsuNg0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "637634980391-onf24ifflhtje35e3gqbfll7gopvesok.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "637634980391-35utdglsq4abtnvcoo80n3tr13k8p9ka.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.tasteTwin"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

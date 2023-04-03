@@ -10,6 +10,8 @@ import 'package:taste_twin/components/userPreferences.dart';
 import 'package:taste_twin/pages/nextPerson.dart';
 import 'results_page.dart';
 import 'package:taste_twin/models/restaurant.dart';
+import 'dart:convert';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../components/UserPreferences_provider.dart';
 import 'results_page.dart';
@@ -20,11 +22,20 @@ class Content {
   final Color color;
   final String name;
   final double location;
-  final String price;
-  final String type;
-  final String description;
-  final String pictureUrl;
-  final List<String> tags;
+  final String? price;
+  final String? type;
+  final String? description;
+  final String? pictureUrl;
+  bool isCardFlipped;
+  // final List<String> tags;
+
+  void setIsCardFlipped(bool value) {
+    isCardFlipped = value;
+  }
+
+  bool getIsCardFlipped() {
+    return isCardFlipped;
+  }
 
   Content({
     required this.text,
@@ -35,14 +46,14 @@ class Content {
     required this.type,
     required this.description,
     required this.pictureUrl,
-    required this.tags,
+    required this.isCardFlipped,
+    // required this.tags});
   });
 }
 
 class MatchPage extends StatefulWidget {
   const MatchPage({super.key, required this.title});
   final String title;
-
   @override
   State<MatchPage> createState() => _MatchPage();
 }
@@ -52,68 +63,90 @@ class _MatchPage extends State<MatchPage> {
   List<Rest> _matches = <Rest>[];
   late MatchEngine _matchEngine;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+  List<Restaurant> restaurants = <Restaurant>[];
   int startTimeInt = 0;
   int interations = 0;
 
+  List<Restaurant> parseRestaurants(String responseBody) {
+    // This method parses the JSON response from the database and creates
+    // restaurant objects for each JSON object and returns them in a list.
+    final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+
+    return parsed.map<Restaurant>((json) => Restaurant.fromJson(json)).toList();
+  }
+
+  void readDB() async {
+    FirebaseDatabase database = FirebaseDatabase.instance;
+    DatabaseReference ref = FirebaseDatabase.instance.ref();
+    DatabaseEvent event = await ref.once();
+    restaurants = parseRestaurants(event.snapshot.value.toString());
+  }
+
   @override
   void initState() {
-    DateTime now = DateTime.now();
-    var startTime = "${now.minute}${now.second}${now.millisecond}";
-    var minutes = int.parse(startTime.substring(0, 2));
-    var seconds = int.parse(startTime.substring(2, 4));
-    var milliseconds = int.parse(startTime.substring(4));
-    var startTimeInSeconds = minutes * 60 + seconds + (milliseconds / 1000);
-    var cond = 0;
-
-    for (int i = 0; i < tempRestaurantList.length; i++) {
-      _swipeItems.add(SwipeItem(
-          content: Content(
-            text: tempRestaurantList[i].name,
-            name: tempRestaurantList[i].name,
-            location: tempRestaurantList[i].location,
-            price: tempRestaurantList[i].price,
-            type: tempRestaurantList[i].type,
-            description: tempRestaurantList[i].description,
-            pictureUrl: tempRestaurantList[i].pictureURL,
-            color: Colors.white,
-            tags: tempRestaurantList[i].tags,
-          ),
-          likeAction: () {
-            DateTime now = DateTime.now();
-            var endTime = "${now.minute}${now.second}${now.millisecond}";
-            var minutes = int.parse(endTime.substring(0, 2));
-            var seconds = int.parse(endTime.substring(2, 4));
-            var milliseconds = int.parse(endTime.substring(4));
-            var endTimeInSeconds =
-                minutes * 60 + seconds + (milliseconds / 1000);
-            double difference = endTimeInSeconds - startTimeInSeconds;
-            _handleLikedRestaurant(difference, i);
-            cond = 0;
-          },
-          nopeAction: () {
-            cond = 0;
-          },
-          superlikeAction: () {
-            _handleLikedRestaurant(0, i);
-            cond = 0;
-          },
-          onSlideUpdate: (SlideRegion? region) async {
-            if (cond == 0) {
-              DateTime startNow = DateTime.now();
-              startTime =
-                  "${startNow.minute}${startNow.second}${startNow.millisecond}";
-              minutes = int.parse(startTime.substring(0, 2));
-              seconds = int.parse(startTime.substring(2, 4));
-              milliseconds = int.parse(startTime.substring(4));
-              startTimeInSeconds =
-                  minutes * 60 + seconds + (milliseconds / 1000);
-              cond = 1;
-            }
-          }));
-    }
-
-    _matchEngine = MatchEngine(swipeItems: _swipeItems);
     super.initState();
+    readDB();
+    _matchEngine = MatchEngine(swipeItems: _swipeItems);
+    Future.delayed(const Duration(seconds: 1), () {
+      setState(() {
+        DateTime now = DateTime.now();
+        var startTime = "${now.minute}${now.second}${now.millisecond}";
+        var minutes = int.parse(startTime.substring(0, 2));
+        var seconds = int.parse(startTime.substring(2, 4));
+        var milliseconds = int.parse(startTime.substring(4));
+        var startTimeInSeconds = minutes * 60 + seconds + (milliseconds / 1000);
+        var cond = 0;
+
+        for (int i = 0; i < restaurants.length; i++) {
+          // print(restaurants[i].pictureURL);
+          _swipeItems.add(SwipeItem(
+              content: Content(
+                isCardFlipped: false,
+                text: restaurants[i].name,
+                name: restaurants[i].name,
+                location: restaurants[i].location,
+                price: restaurants[i].price,
+                type: restaurants[i].type,
+                description: restaurants[i].description,
+                pictureUrl: restaurants[i].pictureURL,
+                color: Colors.white,
+                // tags: tempRestaurantList[i].tags,
+              ),
+              likeAction: () {
+                DateTime now = DateTime.now();
+                var endTime = "${now.minute}${now.second}${now.millisecond}";
+                var minutes = int.parse(endTime.substring(0, 2));
+                var seconds = int.parse(endTime.substring(2, 4));
+                var milliseconds = int.parse(endTime.substring(4));
+                var endTimeInSeconds =
+                    minutes * 60 + seconds + (milliseconds / 1000);
+                double difference = endTimeInSeconds - startTimeInSeconds;
+                _handleLikedRestaurant(difference, i);
+                cond = 0;
+              },
+              nopeAction: () {
+                cond = 0;
+              },
+              superlikeAction: () {
+                _handleLikedRestaurant(0, i);
+                cond = 0;
+              },
+              onSlideUpdate: (SlideRegion? region) async {
+                if (cond == 0) {
+                  DateTime startNow = DateTime.now();
+                  startTime =
+                      "${startNow.minute}${startNow.second}${startNow.millisecond}";
+                  minutes = int.parse(startTime.substring(0, 2));
+                  seconds = int.parse(startTime.substring(2, 4));
+                  milliseconds = int.parse(startTime.substring(4));
+                  startTimeInSeconds =
+                      minutes * 60 + seconds + (milliseconds / 1000);
+                  cond = 1;
+                }
+              }));
+        }
+      });
+    });
   }
 
   bool _showSwipeCards = true;
@@ -125,8 +158,20 @@ class _MatchPage extends State<MatchPage> {
   }
 
   void _handleLikedRestaurant(double time, int index) {
-    Rest restaurantObject = Rest(rest: tempRestaurantList[index], time: time);
+    // _matches.add(restaurants[index], time: time);
+    // Rest newRest = Rest(restaurants[index], time);
+    // newRest.setRestaurant(restaurants[index]);
+    // newRest.setTime(time);
+    Rest restaurantObject = Rest(rest: restaurants[index], time: time);
+
     _matches.add(restaurantObject);
+  }
+
+  // Toggle if card is flipped or not.
+  void _flipCard(SwipeItem item) {
+    setState(() {
+      item.content.setIsCardFlipped(!item.content.getIsCardFlipped());
+    });
   }
 
   @override
@@ -138,61 +183,61 @@ class _MatchPage extends State<MatchPage> {
       final userPreferencesNotifier =
           ref.watch(userPreferencesProvider.notifier);
 
-      bool allowFastFood = notifier.getFastFood();
+      // bool allowFastFood = notifier.getFastFood();
 
-      //Get the restaurants that the user has unliked
-      List<String> options = [
-        "Italian",
-        "Chinese",
-        "Mexican",
-        "Indian",
-        "French",
-        "Japanese",
-        "American",
-      ];
+      // //Get the restaurants that the user has unliked
+      // List<String> options = [
+      //   "Italian",
+      //   "Chinese",
+      //   "Mexican",
+      //   "Indian",
+      //   "French",
+      //   "Japanese",
+      //   "American",
+      // ];
 
-      List<dynamic> values = notifier.getSelectedCuisines();
-      List<String> cuisinesNotChosen = [];
+      // List<dynamic> values = notifier.getSelectedCuisines();
+      // List<String> cuisinesNotChosen = [];
 
-      //Get the list of unselected cuisines
-      for (int i = 0; i < options.length; i++) {
-        if (!values.contains(options[i])) {
-          cuisinesNotChosen.add(options[i]);
-        }
-      }
+      // //Get the list of unselected cuisines
+      // for (int i = 0; i < options.length; i++) {
+      //   if (!values.contains(options[i])) {
+      //     cuisinesNotChosen.add(options[i]);
+      //   }
+      // }
 
-      double distance = notifier.getSearchDistanceValue();
+      // double distance = notifier.getSearchDistanceValue();
 
-      for (int i = 0; i < _swipeItems.length; i++) {
-        //If the user doesn't want fast food, remove fast food restaurants
-        if (!allowFastFood) {
-          if (_swipeItems[i].content.tags.contains("Fast Food")) {
-            _swipeItems.removeAt(i);
-          }
-        }
+      // for (int i = 0; i < _swipeItems.length; i++) {
+      //   //If the user doesn't want fast food, remove fast food restaurants
+      //   if (!allowFastFood) {
+      //     if (_swipeItems[i].content.tags.contains("Fast Food")) {
+      //       _swipeItems.removeAt(i);
+      //     }
+      //   }
 
-        bool skipped = false;
+      //   bool skipped = false;
 
-        //If they don't want a cuisine, remove it
-        for (int j = 0; j < cuisinesNotChosen.length; j++) {
-          if (_swipeItems[i].content.tags.contains(cuisinesNotChosen[j])) {
-            _swipeItems.removeAt(i);
-            i -= 1;
-            skipped = true;
-            break;
-          }
-        }
+      //   //If they don't want a cuisine, remove it
+      //   for (int j = 0; j < cuisinesNotChosen.length; j++) {
+      //     if (_swipeItems[i].content.tags.contains(cuisinesNotChosen[j])) {
+      //       _swipeItems.removeAt(i);
+      //       i -= 1;
+      //       skipped = true;
+      //       break;
+      //     }
+      //   }
 
-        if (skipped) {
-          continue;
-        }
+      //   if (skipped) {
+      //     continue;
+      //   }
 
-        //Remove restaurants that are too far away
-        if (_swipeItems[i].content.location > distance) {
-          _swipeItems.removeAt(i);
-          i -= 1;
-        }
-      }
+      //   //Remove restaurants that are too far away
+      //   if (_swipeItems[i].content.location > distance) {
+      //     _swipeItems.removeAt(i);
+      //     i -= 1;
+      //   }
+      // }
 
       return Scaffold(
           appBar: AppBar(
@@ -207,6 +252,11 @@ class _MatchPage extends State<MatchPage> {
                       matchEngine: _matchEngine,
                       itemBuilder: (BuildContext context, int index) {
                         return Container(
+                          decoration: BoxDecoration(
+                              color: _swipeItems[index].content.color,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(10))),
+                          margin: const EdgeInsets.all(8),
                           alignment: Alignment.center,
                           color: _swipeItems[index].content.color,
                           child: Stack(
@@ -307,8 +357,8 @@ class _MatchPage extends State<MatchPage> {
                         // print("Matches object: ${userPreferences.matches}");
                         //print("List of Restaurants: $_matches");
                         for (var i = 0; i < _matches.length; i++) {
-                          print(
-                              "List of Restaurants ${i + 1}: ${_matches[i].rest!.name}, ${_matches[i].time}");
+                          // print(
+                          // "List of Restaurants ${i + 1}: ${_matches[i].rest!.name}, ${_matches[i].time}");
                         }
                       },
                       upSwipeAllowed: true,
@@ -383,5 +433,141 @@ class _MatchPage extends State<MatchPage> {
                   },
                 )));
     });
+  }
+
+  // Builds the card displaying a restauarant.
+  Widget card(SwipeItem item) {
+    return Container(
+      child: !item.content.getIsCardFlipped()
+          ? Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    image: DecorationImage(
+                      image: NetworkImage(item.content.pictureUrl),
+                      fit: BoxFit.fitHeight,
+                    ),
+                  ),
+                ),
+                Container(
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    gradient: LinearGradient(
+                      begin: Alignment(0, 0),
+                      end: Alignment(0, 1),
+                      colors: [
+                        Colors.transparent,
+                        Colors.black,
+                      ],
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.content.name,
+                            style: const TextStyle(
+                                fontSize: 20,
+                                color: Color.fromARGB(255, 255, 255, 255)),
+                          ),
+                          Text(item.content.price,
+                              style: const TextStyle(
+                                  fontSize: 20,
+                                  color: Color.fromARGB(255, 255, 255, 255))),
+                          Text("${item.content.location} kms away",
+                              style: const TextStyle(
+                                  fontSize: 20,
+                                  color: Color.fromARGB(255, 255, 255, 255))),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                // Toggle if card is flipped or not.
+                                _flipCard(item);
+                              },
+                              icon: const Icon(CupertinoIcons.info,
+                                  size: 40, color: Colors.white),
+                            )
+                          ],
+                        ))
+                  ],
+                )
+              ],
+            )
+          : Container(
+              width: 400,
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  border: Border.all(color: Colors.blue, width: 2)),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 8),
+                          const Text(
+                            "Description",
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            "${item.content.description}",
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            "Location",
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            "${item.content.location} km away.",
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            _flipCard(item);
+                          },
+                          icon: const Icon(CupertinoIcons.info,
+                              size: 40, color: Colors.blue),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+    );
   }
 }

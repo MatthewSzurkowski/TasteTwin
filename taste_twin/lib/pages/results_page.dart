@@ -148,7 +148,8 @@ class ResultsPage extends StatelessWidget {
                           children: [
                             Text(sortedMatches[index]
                                 .getRestaurant()!
-                                .description),
+                                .description
+                                .toString()),
                             const SizedBox(
                               height: 10,
                             ),

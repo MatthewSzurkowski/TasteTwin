@@ -43,6 +43,12 @@ dependencies:
   swipe_cards: ^2.0.0+1
   url_launcher: ^6.1.10
   flutter_riverpod: ^2.3.2
+  firebase_core: ^2.7.1
+  cloud_firestore: ^4.4.4
+  firebase_database: ^10.0.15
+  http: ^0.13.5
+  json_serializable: ^6.6.1
+  build_runner: ^2.3.3
 
 dev_dependencies:
   flutter_test:
@@ -54,7 +60,6 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
-
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

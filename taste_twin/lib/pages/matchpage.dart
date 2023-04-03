@@ -121,8 +121,6 @@ class _MatchPage extends State<MatchPage> {
                 DateTime now = DateTime.now();
                 Duration difference = now.difference(globalStartTime);
                 double differenceInSeconds = difference.inMilliseconds / 1000;
-                print("DIFFERENCE: $differenceInSeconds");
-                print("----");
                 _handleLikedRestaurant(differenceInSeconds, i);
                 cond = 0;
               },

@@ -39,11 +39,11 @@ class MyApp extends StatelessWidget {
     //final preferences = useProvider(preferencesProvider);
     return ProviderScope(
       child: MaterialApp(
-        title: 'Taste Twin',
+        title: 'TasteTwin',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const MyHomePage(title: 'Taste Twin'),
+        home: const MyHomePage(title: 'TasteTwin'),
       ),
     );
   }

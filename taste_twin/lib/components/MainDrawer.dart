@@ -24,7 +24,7 @@ class MainDrawer extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.blue,
             ),
-            child: Text('Taste Twin',
+            child: Text('TasteTwin',
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -45,7 +45,7 @@ class MainDrawer extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          const MyHomePage(title: 'Taste Twin')),
+                          const MyHomePage(title: 'TasteTwin')),
                 );
               }
             },

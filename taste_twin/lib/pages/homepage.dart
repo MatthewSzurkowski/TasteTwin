@@ -63,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               MaterialPageRoute(
                                 builder: (BuildContext context) =>
                                     const MatchPage(
-                                  title: 'Taste Twin',
+                                  title: 'TasteTwin',
                                 ),
                               ),
                             );

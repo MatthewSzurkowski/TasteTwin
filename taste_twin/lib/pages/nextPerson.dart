@@ -49,7 +49,7 @@ class _NextPersonPage extends State<NextPersonPage> {
                           context,
                           MaterialPageRoute(
                             builder: (BuildContext context) => const MatchPage(
-                              title: 'Matches',
+                              title: 'TasteTwin',
                             ),
                           ),
                         );

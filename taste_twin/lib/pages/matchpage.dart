@@ -173,7 +173,7 @@ class _MatchPage extends State<MatchPage> {
           context,
           MaterialPageRoute(
             builder: (BuildContext context) => NextPersonPage(
-              title: 'Taste Twin',
+              title: 'TasteTwin',
               matches: _matches,
             ),
           ),
@@ -429,7 +429,7 @@ class _MatchPage extends State<MatchPage> {
                           context,
                           MaterialPageRoute(
                             builder: (BuildContext context) => NextPersonPage(
-                              title: 'Taste Twin',
+                              title: 'TasteTwin',
                               matches: _matches,
                             ),
                           ),

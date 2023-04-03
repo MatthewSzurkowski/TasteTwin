@@ -14,8 +14,8 @@ class PreferencesNotifier extends StateNotifier<Preferences> {
             'Chinese',
             'Mexican',
             'Indian',
-            'French',
-            'Japanese',
+            'Canadian',
+            'Greek',
             'American'
           ],
         ));
@@ -41,7 +41,11 @@ class PreferencesNotifier extends StateNotifier<Preferences> {
     return state.time;
   }
 
-  String getTime() {
+  int getTime() {
+    return int.parse(state.time) * 60;
+  }
+
+  String getStringTime() {
     return state.time;
   }
 

@@ -37,7 +37,7 @@ class _FiltersPage extends State<FiltersPage> {
       builder: (context, ref, _) {
         final notifier = ref.watch(preferencesProvider.notifier);
         final preferences = ref.watch(preferencesProvider);
-        String dropdownValue = notifier.getTime();
+        String dropdownValue = notifier.getStringTime();
         return Scaffold(
           appBar: AppBar(
             title: Text(widget.title),
@@ -122,8 +122,8 @@ class _FiltersPage extends State<FiltersPage> {
                     "Chinese",
                     "Mexican",
                     "Indian",
-                    "French",
-                    "Japanese",
+                    "Canadian",
+                    "Greek",
                     "American",
                   ],
                   buttonValuesList: const [
@@ -131,8 +131,8 @@ class _FiltersPage extends State<FiltersPage> {
                     "Chinese",
                     "Mexican",
                     "Indian",
-                    "French",
-                    "Japanese",
+                    "Canadian",
+                    "Greek",
                     "American",
                   ],
                   checkBoxButtonValues: (List<dynamic> values) {
@@ -162,6 +162,7 @@ class _FiltersPage extends State<FiltersPage> {
                       onChanged: (int? newValue) {
                         setState(() {
                           numUsersVal = notifier.setNumUsers(newValue!);
+                          notifier.setRemUsers();
                         });
                       },
                       items: List.generate(

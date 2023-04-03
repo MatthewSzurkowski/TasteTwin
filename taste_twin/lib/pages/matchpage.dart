@@ -285,7 +285,7 @@ class _MatchPage extends State<MatchPage> {
         }
 
         //Remove restaurants that are too far away
-        if (_swipeItems[i].content.location > distance) {
+        if (_swipeItems[i].content.distanceGuelph > distance) {
           _swipeItems.removeAt(i);
           i -= 1;
         }

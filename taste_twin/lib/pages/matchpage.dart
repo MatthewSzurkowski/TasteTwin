@@ -148,6 +148,7 @@ class _MatchPage extends State<MatchPage> {
   // ignore: unused_field
   Timer? _timer;
   CountdownTimerController? _timerController;
+  int startTimerCondition = 0;
 
   void _startTimer() {
     final Duration timerDuration = Duration(seconds: globalNotifier.getTime());
@@ -222,7 +223,10 @@ class _MatchPage extends State<MatchPage> {
     return Consumer(builder: (context, ref, _) {
       final notifier = ref.watch(preferencesProvider.notifier);
       globalNotifier = notifier;
-      _startTimer();
+      if (startTimerCondition == 0) {
+        _startTimer();
+        startTimerCondition = 1;
+      }
       final userPreferences = ref.watch(userPreferencesProvider);
       final userPreferencesNotifier =
           ref.watch(userPreferencesProvider.notifier);

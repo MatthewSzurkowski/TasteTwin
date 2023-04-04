@@ -483,26 +483,30 @@ class _MatchPage extends State<MatchPage> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item.content.name,
-                            style: const TextStyle(
-                                fontSize: 20,
-                                color: Color.fromARGB(255, 255, 255, 255)),
-                          ),
-                          Text(item.content.price,
-                              style: const TextStyle(
-                                  fontSize: 20,
-                                  color: Color.fromARGB(255, 255, 255, 255))),
-                          Text("${item.content.distanceGuelph} kms away",
-                              style: const TextStyle(
-                                  fontSize: 20,
-                                  color: Color.fromARGB(255, 255, 255, 255))),
-                        ],
-                      ),
+                      child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.75,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                item.content.name,
+                                style: const TextStyle(
+                                    fontSize: 20,
+                                    color: Color.fromARGB(255, 255, 255, 255)),
+                              ),
+                              Text(item.content.price,
+                                  style: const TextStyle(
+                                      fontSize: 20,
+                                      color:
+                                          Color.fromARGB(255, 255, 255, 255))),
+                              Text("${item.content.distanceGuelph} kms away",
+                                  style: const TextStyle(
+                                      fontSize: 20,
+                                      color:
+                                          Color.fromARGB(255, 255, 255, 255))),
+                            ],
+                          )),
                     ),
                     Padding(
                         padding: const EdgeInsets.all(10.0),

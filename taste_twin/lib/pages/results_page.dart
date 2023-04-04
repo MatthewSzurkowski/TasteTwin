@@ -164,7 +164,7 @@ class ResultsPage extends StatelessWidget {
                               Text(sortedMatches[index].getRestaurant()!.name),
                           subtitle: Text(
                             "${sortedMatches[index].getRestaurant()!.type} - ${sortedMatches[index].getRestaurant()!.price}",
-                            style: const TextStyle(fontSize: 12),
+                            style: const TextStyle(fontSize: 11),
                           ),
                           children: [
                             Text(
@@ -227,7 +227,7 @@ class ResultsPage extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (BuildContext context) => const MyHomePage(
-                            title: 'Taste Twin',
+                            title: 'TasteTwin',
                           ),
                         ),
                       );

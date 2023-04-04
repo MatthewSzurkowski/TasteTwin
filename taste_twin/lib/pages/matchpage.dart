@@ -148,6 +148,7 @@ class _MatchPage extends State<MatchPage> {
   // ignore: unused_field
   Timer? _timer;
   CountdownTimerController? _timerController;
+  int startTimerCondition = 0;
 
   void _startTimer() {
     final Duration timerDuration = Duration(seconds: globalNotifier.getTime());
@@ -222,7 +223,10 @@ class _MatchPage extends State<MatchPage> {
     return Consumer(builder: (context, ref, _) {
       final notifier = ref.watch(preferencesProvider.notifier);
       globalNotifier = notifier;
-      _startTimer();
+      if (startTimerCondition == 0) {
+        _startTimer();
+        startTimerCondition = 1;
+      }
       final userPreferences = ref.watch(userPreferencesProvider);
       final userPreferencesNotifier =
           ref.watch(userPreferencesProvider.notifier);
@@ -483,26 +487,30 @@ class _MatchPage extends State<MatchPage> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item.content.name,
-                            style: const TextStyle(
-                                fontSize: 20,
-                                color: Color.fromARGB(255, 255, 255, 255)),
-                          ),
-                          Text(item.content.price,
-                              style: const TextStyle(
-                                  fontSize: 20,
-                                  color: Color.fromARGB(255, 255, 255, 255))),
-                          Text("${item.content.distanceGuelph} kms away",
-                              style: const TextStyle(
-                                  fontSize: 20,
-                                  color: Color.fromARGB(255, 255, 255, 255))),
-                        ],
-                      ),
+                      child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.76,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                item.content.name,
+                                style: const TextStyle(
+                                    fontSize: 20,
+                                    color: Color.fromARGB(255, 255, 255, 255)),
+                              ),
+                              Text(item.content.price,
+                                  style: const TextStyle(
+                                      fontSize: 20,
+                                      color:
+                                          Color.fromARGB(255, 255, 255, 255))),
+                              Text("${item.content.distanceGuelph} kms away",
+                                  style: const TextStyle(
+                                      fontSize: 20,
+                                      color:
+                                          Color.fromARGB(255, 255, 255, 255))),
+                            ],
+                          )),
                     ),
                     Padding(
                         padding: const EdgeInsets.all(10.0),

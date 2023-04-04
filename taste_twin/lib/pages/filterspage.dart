@@ -42,7 +42,8 @@ class _FiltersPage extends State<FiltersPage> {
           appBar: AppBar(
             title: Text(widget.title),
           ),
-          body: Padding(
+          body: SingleChildScrollView(
+              child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,7 +211,7 @@ class _FiltersPage extends State<FiltersPage> {
                 )
               ],
             ),
-          ),
+          )),
           drawer: widget.isDrawerVisible
               ? const MainDrawer(
                   currentPage: 'Filters',

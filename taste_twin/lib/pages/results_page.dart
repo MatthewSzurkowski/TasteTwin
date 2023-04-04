@@ -160,11 +160,19 @@ class ResultsPage extends StatelessWidget {
                                   size: 40,
                                 )
                               ]),
-                          title:
-                              Text(sortedMatches[index].getRestaurant()!.name),
+                          title: Text(
+                            sortedMatches[index].getRestaurant()!.name,
+                            style: TextStyle(
+                              fontSize: MediaQuery.of(context).size.width *
+                                  0.038, // set font size based on screen width
+                            ),
+                          ),
                           subtitle: Text(
                             "${sortedMatches[index].getRestaurant()!.type} - ${sortedMatches[index].getRestaurant()!.price}",
-                            style: const TextStyle(fontSize: 12),
+                            style: TextStyle(
+                              fontSize: MediaQuery.of(context).size.width *
+                                  0.028, // set font size based on screen width
+                            ),
                           ),
                           children: [
                             Text(
@@ -227,7 +235,7 @@ class ResultsPage extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (BuildContext context) => const MyHomePage(
-                            title: 'Taste Twin',
+                            title: 'TasteTwin',
                           ),
                         ),
                       );

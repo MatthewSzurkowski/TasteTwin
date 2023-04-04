@@ -40,6 +40,7 @@ class _NextPersonPage extends State<NextPersonPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     const Text("Switch to the Next Person!",
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 30, color: Color.fromARGB(255, 0, 0, 0))),
                     ElevatedButton(
